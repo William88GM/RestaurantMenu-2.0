@@ -71,7 +71,7 @@ export default async function Static0({ params }) {
                 <Suspense fallback={<div>Loading...</div>}>
                     <div className="flex mr-6">
                         {data.interface.socialMedia.map((e) => {
-                            return <Link href={e.link} target="_blank" key={e.id} className="redes"><img src={imagesInterface.socialMedia.find((el) => el.idElement === e.id).src} id={e.id} alt={e.name} /></Link>
+                            return <Link prefetch={true} href={e.link} target="_blank" key={e.id} className="redes"><img src={imagesInterface.socialMedia.find((el) => el.idElement === e.id).src} id={e.id} alt={e.name} /></Link>
                         })}
                     </div>
                 </Suspense>

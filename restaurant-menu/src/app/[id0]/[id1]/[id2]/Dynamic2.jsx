@@ -19,9 +19,6 @@ export const runtime = 'edge';
 
 
 export default function Dynamic2({ params }) {
-    // const name = decodeURIComponent(params.id0)
-    // const name1 = decodeURIComponent(params.id1)
-    // const name2 = decodeURIComponent(params.id2) //pagina actual
     const name = decodeURIComponent(params.id0.replaceAll("-", " "))
     const name1 = decodeURIComponent(params.id1.replaceAll("-", " "))
     const name2 = decodeURIComponent(params.id2.replaceAll("-", " "))

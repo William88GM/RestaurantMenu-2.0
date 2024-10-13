@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react"
+import Article from "./Components/article/Article";
+import Footer from "./Components/footer/Footer";
 
 export default async function Static2({ params }) {
 
@@ -10,49 +12,8 @@ export default async function Static2({ params }) {
     const name2 = decodeURIComponent(params.id2.replaceAll("-", " "))
 
 
-    let data = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data`)
-    data = await data.json()
-    data = JSON.parse(data.body)
 
-    let targetItem;
-    if (data && data.options) {
 
-        // Buscar la categoría
-        for (const category of data.options) {
-            if (category.name === name) {
-                for (const subcategory of category.options) {
-                    if (subcategory.name === name1) {
-                        for (const item of subcategory.options) {
-                            if (item.name === name2) {
-                                targetItem = item;
-                                break; // Sale del bucle interno
-                            }
-                        }
-                        if (targetItem) break; // Sale del segundo bucle
-                    }
-                }
-                if (targetItem) break; // Sale del primer bucle
-            }
-        }
-    }
-
-    let imagesInterface = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/getImagesInterface`)
-    imagesInterface = await imagesInterface.json()
-    imagesInterface = JSON.parse(imagesInterface.body)
-
-    let imagesOptions = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/getImages`, {
-        method: "POST",
-        body: JSON.stringify({ idSection: targetItem.id }), // data can be `string` or {object}!
-        headers: {
-            "Content-Type": "application/json",
-        }
-    })
-    imagesOptions = await imagesOptions.json()
-    imagesOptions = JSON.parse(imagesOptions.body)
-
-    targetItem.options = targetItem.options.map((e, i) => {
-        return { ...e, image: imagesOptions.imagesBase64.find((el) => el.idElement === e.id)?.src ?? "" }
-    })
 
 
 
@@ -82,46 +43,24 @@ export default async function Static2({ params }) {
                     <h3 className='ml-8'>{name2}</h3>
                 </div>
             </section>
+
             <article>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <div className='flex'>
-
-                        <div style={{ scrollBehavior: "smooth" }} className={data.interface.productsListViewMode ? "galery galery-small" : "galery"}>
-
-                            {targetItem.options.map((e, i) => {
-
-                                return <div className={e.visible ? data.interface.productsListViewMode ? "galery-item-small-user" : 'galery-item ' : "hidden"} key={e.id}>
-
-                                    {e.image ? <img src={e.image} alt={e.name} /> : <div className="skeleton animate-pulse space-x-4 bg-red-300 h-[auto] aspect-square w-[70%] rounded"></div>}
-
-                                    <h4>{e.name}</h4>
-                                    <p >{e.description}</p>
-                                    <div className={!e.description && data.interface.productsListViewMode ? "sinDescription flex items-center [padding:2px]" : "flex items-center [padding:2px]"} ><span>$</span><p className='[min-width:20px] font-bold rounded-md [margin-left:2px] [padding:2px]'>{e.price}</p></div>
-                                </div>
-                            })}
-
-                        </div>
-                    </div>
-
-                </Suspense>
+                <div className='flex'>
+                    <Suspense fallback={<span className=' loaderGalery mt-20'></span>}>
+                        <Article name={name} name1={name1} name2={name2} />
+                    </Suspense>
+                </div>
             </article>
 
             <footer>
-
-
                 <svg className='esquinaInfIzquierda' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
                     <path d="M138 138H0V0L138 138Z" fill="#b32624" />
                 </svg>
-
-                <Suspense fallback={<div>Loading...</div>}>
-                    <div className="flex mr-6">
-                        {data.interface.socialMedia.map((e) => {
-                            return <Link href={e.link} target="_blank" key={e.id} className="redes"><img src={imagesInterface.socialMedia.find((el) => el.idElement === e.id).src} id={e.id} alt={e.name} /></Link>
-                        })}
-                    </div>
-                </Suspense>
-                {/* <img className="redes" src={`${process.env.NEXT_PUBLIC_URL}/images/Social.webp`} alt="redes" /> */}
-
+                <div className="flex mr-6">
+                    <Suspense fallback={<span className='redes loaderFooter mt-20'></span>}>
+                        <Footer />
+                    </Suspense>
+                </div>
             </footer>
         </main>
     )
