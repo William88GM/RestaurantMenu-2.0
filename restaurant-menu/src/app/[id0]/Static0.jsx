@@ -54,7 +54,7 @@ export default async function Static0({ params }) {
                         {/*Modo normal*/}
                         {targetCategory.options.map((e, i) => {
                             return <div key={e.id} id={e.id} className={e.visible ? "" : "hidden"}>
-                                <Link prefetch={true} style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Card.webp)` }} className={`link-pag1`} href={`/${name.replaceAll(" ", "-")}/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
+                                <Link style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Card.webp)` }} className={`link-pag1`} href={`/${name.replaceAll(" ", "-")}/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
                             </div>
                         })}
                     </div>

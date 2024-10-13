@@ -82,7 +82,7 @@ export default async function Static1({ params }) {
                         {/*Modo normal*/}
                         {targetSubcategory.options.map((e, i) => {
                             return <div key={e.id} className={e.visible ? 'link-pag2' : "hidden"}>
-                                <Link prefetch={true} id={`link-pag2-${e.id}`} className='link-pag2 [padding:2px] rounded-md' href={`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${e.name.replaceAll(" ", "-")}`}>{e.name}
+                                <Link id={`link-pag2-${e.id}`} className='link-pag2 [padding:2px] rounded-md' href={`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${e.name.replaceAll(" ", "-")}`}>{e.name}
                                     {e.image ? <img src={e.image} className="cursor-pointer" width="30px" height="30px" alt={e.name} /> : <div className="animate-pulse space-x-4 bg-red-300 aspect-square pr-6 h-[30px] w-[30px] rounded"></div>}
                                 </Link>
 

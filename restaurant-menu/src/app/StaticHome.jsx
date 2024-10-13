@@ -35,7 +35,7 @@ export default async function StaticHome() {
                         { /*Modo normal*/}
                         {data.options.map((e, i) => {
                             return <div key={e.id} className={e.visible ? "" : "hidden"}>
-                                <Link prefetch={true} className="link-pagSuc" key={e.id} href={`/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
+                                <Link className="link-pagSuc" key={e.id} href={`/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
                             </div>
                         })}
                     </div>
