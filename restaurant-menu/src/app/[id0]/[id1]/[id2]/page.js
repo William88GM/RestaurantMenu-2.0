@@ -17,7 +17,7 @@ export default async function Home({ params }) {
         }
         if (response && response.status === 200) {
             return (
-                <Dynamic2 />
+                <Dynamic2 params={params} />
             )
         }
     }
