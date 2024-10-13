@@ -1,10 +1,11 @@
 import { SessionContext } from '@/Context/SessionContext'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import React, { useContext, useState } from 'react'
 
 export default function MenuLogin({ setShowPassword, showPassword, showMenu, handleMenu, setShowMenu }) {
 
-
+    const router = useRouter()
     const { logged, setLogged } = useContext(SessionContext)
 
     const [formData, setFormData] = useState({ user: "", password: "" })
@@ -41,6 +42,9 @@ export default function MenuLogin({ setShowPassword, showPassword, showMenu, han
                 setLogged(true)
                 setErrorState(false)
                 localStorage.clear();
+                router.push("/")
+                router.refresh()
+
 
             } else if (response.status === 400) {
                 setLoading(false)
