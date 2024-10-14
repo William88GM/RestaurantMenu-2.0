@@ -22,7 +22,8 @@ export default async function Home({ params }) {
         }
     }
     return (
-        <Static1 params={params} />
+        <Dynamic1 params={params} />
+        // <Static1 params={params} />
     )
 
 }
