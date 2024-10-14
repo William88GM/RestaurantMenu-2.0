@@ -1441,6 +1441,7 @@ main {
   border-top: 3px solid #7a0000;
   border-right: 3px solid transparent;
   margin-bottom: 80px;
+
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
 }
