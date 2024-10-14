@@ -46,9 +46,9 @@ export default async function Static2({ params }) {
 
             <article>
                 <div className='flex'>
-                    <Suspense fallback={<span className=' loaderGalery mt-20'></span>}>
-                        <Article name={name} name1={name1} name2={name2} />
-                    </Suspense>
+                    {/* <Suspense fallback={<span className=' loaderGalery mt-20'></span>}>
+                    </Suspense> */}
+                    <Article name={name} name1={name1} name2={name2} />
                 </div>
             </article>
 

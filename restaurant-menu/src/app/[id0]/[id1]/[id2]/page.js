@@ -1,29 +1,22 @@
-import { cookies } from "next/headers";
-import axios from "axios";
-import Dynamic2 from "./Dynamic2";
-import Static2 from "./Static2";
+
+
+import { headers } from 'next/headers'; // Para obtener los headers
+import Dynamic2 from './Dynamic2';
+import Static2 from './Static2';
 
 export default async function Home({ params }) {
+    // Obtener los headers desde la solicitud
+    const headersList = headers();
+    const userAgent = headersList.get('user-agent') || '';
 
-    const cookieStore = cookies();
-    const token = cookieStore.get('token')?.value;
-    let response
-    if (token) {
-        try {
-            response = await axios.get(`${process.env.NEXT_PUBLIC_URL}/api/login/autoLogin?token=${token}`)
+    // Detectar si el visitante es un bot
+    const isBot = /Googlebot|Bingbot|Slurp|DuckDuckBot|Yahoo! Slurp|Baiduspider/i.test(userAgent);
 
-        } catch (err) {
-            console.log("Hubo error");
-        }
-        if (response && response.status === 200) {
-            return (
-                <Dynamic2 params={params} />
-            )
-        }
+    // Si es bot, mostrar la versión estática
+    if (isBot) {
+        return <Static2 params={params} />;
     }
-    return (
-        <Dynamic2 params={params} />
-        // <Static2 params={params} />
-    )
 
+    // Si es un usuario normal, mostrar la versión dinámica
+    return <Dynamic2 params={params} />;
 }

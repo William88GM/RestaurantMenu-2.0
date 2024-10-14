@@ -1,28 +1,25 @@
-import { cookies } from "next/headers";
-import DynamicHome from "./DynamicHome";
-import StaticHome from "./StaticHome";
-import axios from "axios";
 
-export default async function Home() {
 
-  const cookieStore = cookies();
-  const token = cookieStore.get('token')?.value;
-  let response
-  if (token) {
-    try {
-      response = await axios.get(`${process.env.NEXT_PUBLIC_URL}/api/login/autoLogin?token=${token}`)
+import { headers } from 'next/headers'; // Para obtener los headers
+import StaticHome from './StaticHome';
+import DynamicHome from './DynamicHome';
 
-    } catch (err) {
-      console.log("Hubo error");
-    }
-    if (response && response.status === 200) {
-      return (
-        <DynamicHome />
-      )
-    }
+
+export default async function Home({ params }) {
+
+  // Obtener los headers desde la solicitud
+  const headersList = headers();
+  const userAgent = headersList.get('user-agent') || '';
+
+  // Detectar si el visitante es un bot
+  const isBot = /Googlebot|Bingbot|Slurp|DuckDuckBot|Yahoo! Slurp|Baiduspider/i.test(userAgent);
+
+  // Si es bot, mostrar la versión estática
+  if (isBot) {
+    return <StaticHome />
   }
-  return (
-    <StaticHome />
-  )
+
+  // Si es un usuario normal, mostrar la versión dinámica
+  return <DynamicHome />
 
 }

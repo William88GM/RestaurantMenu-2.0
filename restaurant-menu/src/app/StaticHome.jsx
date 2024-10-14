@@ -19,11 +19,11 @@ export default async function StaticHome() {
             <header>
 
                 <img className='title ' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
-                <Link href="/login">
-                    <svg className={`esquinaSupDerecha`} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                        <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                    </svg>
-                </Link>
+                <svg className={`esquinaSupDerecha`} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
+                    <path d="M0 0H138V138L0 0Z" fill="#b32624" />
+                </svg>
+                {/* <Link href="/login">
+                </Link> */}
 
             </header>
             <section>
