@@ -316,7 +316,9 @@ export default function MenuLogged({ setShowPassword, showPassword, showMenu, ha
 
 
 
-                        {data && imagesInterface ? data.interface.socialMedia.map((e, i) => {
+                        {/* REDES SOCIALES */}
+
+                        {/* {data && imagesInterface ? data.interface.socialMedia.map((e, i) => {
                             return <div className='flex flex-col my-6 bg-red-300 rounded-3xl p-4' key={e.id}>
                                 <label className='flex flex-col my-2 text-black font-extrabold  ' >
                                     Nombre Red social {i + 1}
@@ -332,7 +334,9 @@ export default function MenuLogged({ setShowPassword, showPassword, showMenu, ha
                                 </label>
                                 <input accept="image/*" type="file" id={e.id} style={{ display: 'none' }} onChange={(event) => handleFileChange(event, i)} />
                             </div>
-                        }) : ""}
+                        }) : ""} */}
+
+
                         {/* El push del nuevo o la eliminacion se haria en data.interface.socialMedia */}
 
 

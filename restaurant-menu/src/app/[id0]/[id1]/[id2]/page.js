@@ -1,8 +1,10 @@
 
 
 import { headers } from 'next/headers'; // Para obtener los headers
-import Dynamic2 from './Dynamic2';
-import Static2 from './Static2';
+import Dynamic2 from './Dynamic/Dynamic2';
+import Static2 from './Static/Static2';
+
+export const runtime = 'edge';
 
 export default async function Home({ params }) {
     // Obtener los headers desde la solicitud
@@ -20,3 +22,4 @@ export default async function Home({ params }) {
     // Si es un usuario normal, mostrar la versión dinámica
     return <Dynamic2 params={params} />;
 }
+

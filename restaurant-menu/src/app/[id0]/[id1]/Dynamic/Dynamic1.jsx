@@ -2,7 +2,7 @@
 import useData from '@/Hooks/useData'
 import Link from 'next/link'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import ListItem from './ListItem'
+import ListItem from '../ListItem'
 import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from '@dnd-kit/core'
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SessionContext } from '@/Context/SessionContext'
@@ -12,7 +12,6 @@ import saveToLocalStorage from '@/Hooks/setCache'
 import useImagesInterface from '@/Hooks/useImagesInterface'
 import MenuLogged from '@/app/Components/Menu/MenuLogged'
 import MenuLogin from '@/app/Components/Menu/MenuLogin'
-
 export const runtime = 'edge';
 export default function Dynamic1({ params }) {
 
@@ -83,7 +82,7 @@ export default function Dynamic1({ params }) {
 
 
 
-            const key = name1
+            const key = dataEditableRef1.current.id
 
             const time = 5 //en minutos
             let { exists, isUpToDate, item } = loadFromLocalStorage(key)
@@ -113,7 +112,7 @@ export default function Dynamic1({ params }) {
                             saveToLocalStorage(key, resFormatted, time)
 
                         }
-                    )
+                    ).catch((err) => console.log(err))
                 } else if (item && isUpToDate) {
 
                     dataEditableRef1.current.options = dataEditableRef1.current.options.map((e, i) => {
@@ -404,7 +403,7 @@ export default function Dynamic1({ params }) {
     return (
         <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
             <header>
-                <Link href={`/${params.id0}`}>
+                <Link prefetch={false} href={`/${params.id0}`}>
                     <img className='title' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
                 </Link>
                 {logged ? !editionMode && showMenu ?
@@ -421,7 +420,7 @@ export default function Dynamic1({ params }) {
 
 
             <section>
-                <Link className='flex' href={`/${params.id0}`}>
+                <Link className='flex' prefetch={false} href={`/${params.id0}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none">
                         <path d="M4 10L3.29289 10.7071L2.58579 10L3.29289 9.29289L4 10ZM21 18C21 18.5523 20.5523 19 20 19C19.4477 19 19 18.5523 19 18L21 18ZM8.29289 15.7071L3.29289 10.7071L4.70711 9.29289L9.70711 14.2929L8.29289 15.7071ZM3.29289 9.29289L8.29289 4.29289L9.70711 5.70711L4.70711 10.7071L3.29289 9.29289ZM4 9L14 9L14 11L4 11L4 9ZM21 16L21 18L19 18L19 16L21 16ZM14 9C17.866 9 21 12.134 21 16L19 16C19 13.2386 16.7614 11 14 11L14 9Z" fill="#33363F" />
                     </svg>
@@ -503,9 +502,19 @@ export default function Dynamic1({ params }) {
                 {logged && !toEliminate && editionMode ? <button className={dragActive ? "modoArrastre" : "modoEscritura"} onClick={() => setDragActive(!dragActive)}>{dragActive ? "Arrastre" : "Escritura"}</button> : ""}
                 {logged ? !toEliminate && editionMode ? <button className='añadirProducto' onClick={handleAddCategory}><span>❌</span>Añadir <br /> categoría</button> : "" :
                     <div className="flex mr-6">
-                        {imagesInterface && dataAllRef1.current && dataAllRef1.current.interface.socialMedia.map((e) => {
+                        {/* {imagesInterface && dataAllRef1.current && dataAllRef1.current.interface.socialMedia.map((e) => {
                             return <Link href={e.link} target="_blank" key={e.id} className="redes"><img src={imagesInterface.socialMedia.find((el) => el.idElement === e.id).src} id={e.id} alt={e.name} /></Link>
-                        })}
+                        })} */}
+                        <Link href={"https://www.facebook.com/share/dypxidhHS4xv43Ye/?mibextid=qi2Omg"} style={{ backgroundPosition: "-46px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                        <Link href={"https://www.instagram.com/lavenesanjuan?igsh=MW16OWtsc3Jha2g3eA=="} style={{ backgroundPosition: "-95px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                        {name == "Sucursal Estadio" ?
+                            <Link href={"https://api.whatsapp.com/send?phone=%2B542644572435&text=Hola%20%F0%9F%91%8B%0AMe%20gustar%C3%ADa%20hacer%20una%20reserva%0AGracias&type=phone_number&app_absent=0"} style={{ backgroundPosition: "0px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                            :
+                            name == "Sucursal Cabaña" ?
+                                <Link href={"https://api.whatsapp.com/send?phone=%2B542646264365&text=Hola%20%F0%9F%91%8B%0AMe%20gustar%C3%ADa%20hacer%20una%20reserva%0AGracias&type=phone_number&app_absent=0"} style={{ backgroundPosition: "0px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                                : ""
+                        }
+
                     </div>
                 }
             </footer>

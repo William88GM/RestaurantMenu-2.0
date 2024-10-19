@@ -3,25 +3,10 @@ User-agent: *
 Disallow: /api/
 Allow: /
 Allow: /Sucursal-Estadio
+Allow: /Sucursal-Cabaña
 Allow: /Sucursal-Estadio/Desayunos-y-Meriendas
 Allow: /Sucursal-Estadio/Almuerzos-y-Cenas
 Allow: /Sucursal-Estadio/Bebidas-y-Cócteles
-Allow: /Sucursal-Estadio/Desayunos-y-Meriendas/Infusiones-frías
-Allow: /Sucursal-Estadio/Desayunos-y-Meriendas/Cafetería
-Allow: /Sucursal-Estadio/Desayunos-y-Meriendas/Sandwichería
-Allow: /Sucursal-Estadio/Desayunos-y-Meriendas/Panadería
-Allow: /Sucursal-Estadio/Desayunos-y-Meriendas/Nuestras-Promos
-Allow: /Sucursal-Estadio/Almuerzos-y-Cenas/Entrada
-Allow: /Sucursal-Estadio/Almuerzos-y-Cenas/Plato-principal
-Allow: /Sucursal-Estadio/Almuerzos-y-Cenas/Pizzas
-Allow: /Sucursal-Estadio/Almuerzos-y-Cenas/Nuestras-Pastas-Caseras
-Allow: /Sucursal-Estadio/Almuerzos-y-Cenas/Postres
-Allow: /Sucursal-Estadio/Bebidas-y-Cócteles/Bebidas-sin-Alcohol
-Allow: /Sucursal-Estadio/Bebidas-y-Cócteles/Cervezas-con-Alcohol
-Allow: /Sucursal-Estadio/Bebidas-y-Cócteles/Cerveza-artesanal
-Allow: /Sucursal-Estadio/Bebidas-y-Cócteles/Coctelería
-Allow: /Sucursal-Estadio/Bebidas-y-Cócteles/Vinos-Tintos
-Allow: /Sucursal-Estadio/Bebidas-y-Cócteles/Vinos-Blancos
 
 
 Sitemap: https://martinezcode.top/sitemap.xml

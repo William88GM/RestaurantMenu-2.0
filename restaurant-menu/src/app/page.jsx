@@ -1,10 +1,10 @@
 
 
 import { headers } from 'next/headers'; // Para obtener los headers
-import StaticHome from './StaticHome';
-import DynamicHome from './DynamicHome';
+import StaticHome from './Static/StaticHome';
+import DynamicHome from './Dynamic/DynamicHome';
 
-
+export const runtime = 'edge';
 export default async function Home({ params }) {
 
   // Obtener los headers desde la solicitud

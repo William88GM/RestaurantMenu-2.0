@@ -7,21 +7,14 @@ export const runtime = 'edge';
 
 export async function GET(req) {
     let user, settings, token;
-    const { searchParams } = new URL(req.url);
-    console.log("EL TOKEN", searchParams.get("token"));
-    token = searchParams.get("token");
+
     try {
-        if (token) {
-            const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.jwtkey));
-            user = payload;
-        } else {
+        token = cookies().get("token");
 
-            token = cookies().get("token");
 
-            const { payload } = await jwtVerify(token.value, new TextEncoder().encode(process.env.jwtkey));
-            user = payload;
-        }
-        // console.log(user); 
+        const { payload } = await jwtVerify(token.value, new TextEncoder().encode(process.env.jwtkey));
+        user = payload;
+        // console.log(user);
     } catch (err) {
         return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
@@ -45,7 +38,7 @@ export async function GET(req) {
         const response = await credentials.send(getFileCommand);
         settings = await response.Body.transformToString();
         settings = JSON.parse(settings);
-        console.log("LLEGA HASTA AQUI?");
+
         if (settings.user === user.user && settings.password === user.password) {
             cookies().set({
                 name: 'token',

@@ -1,7 +1,8 @@
 import { headers } from 'next/headers'; // Para obtener los headers
+import Static0 from './Static/Static0';
+import Dynamic0 from './Dynamic/Dynamic0';
 
-import Dynamic0 from "./Dynamic0";
-import Static0 from "./Static0";
+export const runtime = 'edge';
 
 export default async function Home({ params }) {
 

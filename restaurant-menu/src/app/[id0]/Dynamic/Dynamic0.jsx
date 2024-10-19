@@ -1,74 +1,86 @@
 "use client"
-import Link from "next/link";
-import useData from "@/Hooks/useData";
-import { useContext, useEffect, useRef, useState } from "react";
-import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import ListItem from "./ListItem";
-import { SessionContext } from "@/Context/SessionContext";
-import useAutoLogin from "@/Hooks/useAutoLogin";
+import useData from '@/Hooks/useData'
+import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from '@dnd-kit/core'
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import ListItem from '../ListItem'
+import { SessionContext } from '@/Context/SessionContext'
+import useAutoLogin from '@/Hooks/useAutoLogin'
+import useImagesInterface from '@/Hooks/useImagesInterface'
+import MenuLogged from '@/app/Components/Menu/MenuLogged'
+import MenuLogin from '@/app/Components/Menu/MenuLogin'
 
-import useImagesInterface from "@/Hooks/useImagesInterface";
-import MenuLogged from "./Components/Menu/MenuLogged";
-import MenuLogin from "./Components/Menu/MenuLogin";
+
 export const runtime = 'edge';
-export default function DynamicHome({ loggin }) {
 
+export default function Dynamic0({ params }) {
+    // const name = decodeURIComponent(params.id0) //pagina actual
+    const name = decodeURIComponent(params.id0.replaceAll("-", " ")) //pagina actual
+    const pathname = usePathname()
+    const router = useRouter()
+
+    const { logged, setLogged } = useContext(SessionContext)
     useAutoLogin()
-    const { logged } = useContext(SessionContext)
-
     const imagesHaveChanged = useRef(false)
-
-
+    const [showMenu, setShowMenu] = useState(false)
+    const { data, setData } = useData() //json completo en estado
+    const dataEditableRef0 = useRef(null);//tendra solo una parte del json con el que se trabajara en esta pagina
+    const [ediciones, setEdiciones] = useState([]) //[{name: ""},{},{},] solo titulos de los inputs editables, se asignaran al json parcial
+    const dataAllRef0 = useRef(null) //json completo donde se guardara el json parcial y luego se enviara al backend, ademas de usarlo para actualizar el estado data
+    const [loading, setLoading] = useState(false)
+    const [dragActive, setDragActive] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
     const sensors = useSensors(
         useSensor(MouseSensor),
         useSensor(TouchSensor)
     );
-
-
-
-
-
-
-
-    const { data, setData } = useData() //json completo en estado
-    const dataEditableRef = useRef(null);//tendra solo una parte del json con el que se trabajara en esta pagina
-    const [ediciones, setEdiciones] = useState([]) //[{ name: e.name, id: e.id },{},{},] solo titulos de los inputs editables, se asignaran al json parcial
-    const dataAllRef = useRef(null) //json completo donde se guardara el json parcial y luego se enviara al backend, ademas de usarlo para actualizar el estado data
-    const [loading, setLoading] = useState(false)
-    const [dragActive, setDragActive] = useState(false)
-
-    const { imagesInterface } = useImagesInterface()
-
-
-    const guardando = useRef(null)
     const galleryRef = useRef(null)
     const cardRef = useRef(null)
     const longitudItemsPrevios = useRef(null)
+    const guardando = useRef(null)
+    const { imagesInterface } = useImagesInterface()
+    const [editionMode, setEditionMode] = useState(false)//modo edicion
+    const [toEliminate, setToEliminate] = useState(null)//Se guarda el indice del que se quiere eliminar y muestra el banner
+
     const scroll = useRef(false)
 
-    const [editionMode, setEditionMode] = useState(false)
-    const [toEliminate, setToEliminate] = useState(null)
-    const [showMenu, setShowMenu] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
-
-
     useEffect(() => {
-        if (loggin) {
-            setShowMenu(true)
-            loggin = false
-        }
         if (guardando.current) return
         if (data && data.options) {
-            dataAllRef.current = structuredClone(data)
+            let targetCategory;
 
-            dataEditableRef.current = structuredClone(data)
+            // Buscar la categoría
+            for (const category of data.options) {
+                if (category.name === name) {
+                    targetCategory = category;
+                    break; // Sale del bucle tan pronto como encuentra la categoría
+                }
+            }
 
+            // Clonar los datos y la categoría encontrada
+            if (targetCategory) {
+                dataAllRef0.current = structuredClone(data); // Clona los datos originales
+                dataEditableRef0.current = structuredClone(targetCategory); // Copia el objeto de la categoría actual
+            }
+
+
+
+
+
+
+            if (!dataEditableRef0.current || dataEditableRef0.current.visible == false) {
+                return window.location.replace(`/`)
+            }
             //fetch de img si la seccion las necesita
-            longitudItemsPrevios.current = dataEditableRef.current.options.length //Evitar scroll la primera vez
-            setEdiciones(dataEditableRef.current.options)
+            longitudItemsPrevios.current = dataEditableRef0.current.options.length //Evitar scroll la primera vez
+            setEdiciones(dataEditableRef0.current.options)
         }
     }, [data])
+
+
 
 
 
@@ -83,62 +95,54 @@ export default function DynamicHome({ loggin }) {
     }
 
 
-
-
     function handleEliminate() {
-        dataEditableRef.current.options = dataEditableRef.current.options.filter((e) => e.id !== toEliminate)
+        dataEditableRef0.current.options = dataEditableRef0.current.options.filter((e) => e.id !== toEliminate)
 
 
         setToEliminate(null)
 
-        setEdiciones(dataEditableRef.current.options)
+        setEdiciones(dataEditableRef0.current.options)
     }
+
 
 
     function handleAddCategory() {
         scroll.current = true
-        const newCompletedCategory = {
-            name: "Nombre categoria pag 1",
+        const newSubCategory = {
+            name: "Nombre nueva categoría",
             id: crypto.randomUUID(),
             image: "",
             visible: true,
             options: [
                 {
-                    name: "Nombre nueva categoría",
+                    name: "Nombre nueva categoria",
                     id: crypto.randomUUID(),
                     image: "",
                     visible: true,
                     options: [
                         {
-                            name: "Nombre nueva categoria",
+                            name: "Nombre nuevo producto",
                             id: crypto.randomUUID(),
+                            description: "Descripción del producto",
+                            price: "0",
                             image: "",
-                            visible: true,
-                            options: [
-                                {
-                                    name: "Nombre nuevo producto",
-                                    id: crypto.randomUUID(),
-                                    description: "Descripción del producto",
-                                    price: "0",
-                                    image: "",
-                                    visible: true
-                                },
-                            ]
-                        }
+                            visible: true
+                        },
                     ]
                 }
             ]
         }
 
-        dataEditableRef.current.options.push(newCompletedCategory)
+        dataEditableRef0.current.options.push(newSubCategory)
         setEdiciones((prev) => {
 
-            return [...dataEditableRef.current.options]
+            return [...dataEditableRef0.current.options]
         })
 
     }
 
     useEffect(() => {
+
         if (!scroll.current) return
         scroll.current = false
         if (longitudItemsPrevios.current == ediciones.length) {
@@ -171,27 +175,27 @@ export default function DynamicHome({ loggin }) {
 
         return false
     }
+    function handleMenu() {
+        setShowMenu(!showMenu)
+        // console.log("hola");
+    }
 
-
-    async function handleEditionMode() {
+    function handleEditionMode() {
         if (loading) return
         if (editionMode) {
 
             handleSave()
         } else {
 
-
             setEditionMode(true)
         }
     }
 
-
     async function handleSave() {
-        // console.log("dataRefAlprincipio del guardado", dataAllRef.current);
         guardando.current = true
         try {
 
-            let elements = document.querySelector(".containerSucursales");
+            let elements = document.querySelector(".containerInicio");
             let datos
             if (elements) {
 
@@ -202,11 +206,12 @@ export default function DynamicHome({ loggin }) {
                     return {
                         name: e.children[0]?.innerText?.trim().replace(/\r?\n|\r/g, ' ') || '',
                         id: e.id
+
                     };
                 });
 
             } else {
-                console.error("No se encontró el elemento con la clase .containerSucursales");
+                console.error("No se encontró el elemento con la clase .containerInicio");
             }
 
             if (verificarRepetidos(datos)) {
@@ -219,18 +224,18 @@ export default function DynamicHome({ loggin }) {
 
                 setToEliminate(null)
                 //Guarda los titulos editados en el state en la ref que es copia de una parte de Data
-                for (const i in dataEditableRef.current.options) {
+                for (const i in dataEditableRef0.current.options) {
 
-                    dataEditableRef.current.options[i].name = datos.find((e) => e.id === dataEditableRef.current.options[i].id).name
-                    dataEditableRef.current.options[i].image = datos.find((e) => e.id === dataEditableRef.current.options[i].id).image
+                    dataEditableRef0.current.options[i].name = datos.find((e) => e.id === dataEditableRef0.current.options[i].id).name
+                    dataEditableRef0.current.options[i].image = datos.find((e) => e.id === dataEditableRef0.current.options[i].id).image
                 }
-                setEdiciones(dataEditableRef.current.options)
 
+                setEdiciones(dataEditableRef0.current.options)
 
 
                 const images = {
-                    idSection: dataEditableRef.current.id,
-                    imagesBase64: dataEditableRef.current.options.map((e) => {
+                    idSection: dataEditableRef0.current.id,
+                    imagesBase64: dataEditableRef0.current.options.map((e) => {
                         if (e.image && e.image.startsWith("http")) {
                             return { idElement: e.id, src: "" }
                         } else {
@@ -240,16 +245,14 @@ export default function DynamicHome({ loggin }) {
                 }
 
 
-                let copia = structuredClone(dataEditableRef.current.options);
+                let copia = structuredClone(dataEditableRef0.current.options);
                 copia = copia.map((e) => {
                     return { ...e, image: "" }
                 })
 
-
-                dataAllRef.current.options = copia
-
+                dataAllRef0.current.options.find((e) => e.name === name).options = copia
                 //guarda en data el json actualizado de la ref
-                setData(dataAllRef.current)
+                setData(dataAllRef0.current)
                 //envia el json
                 postear(images)
             }
@@ -263,7 +266,7 @@ export default function DynamicHome({ loggin }) {
         setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/modify`, {
             method: "PUT",
-            body: JSON.stringify({ dataAll: dataAllRef.current, images: {}, imagesHaveChanged: imagesHaveChanged.current }), // data can be `string` or {object}!
+            body: JSON.stringify({ dataAll: dataAllRef0.current, images: {}, imagesHaveChanged: imagesHaveChanged.current }), // data can be `string` or {object}!
             headers: {
                 "Content-Type": "application/json",
             },
@@ -273,22 +276,20 @@ export default function DynamicHome({ loggin }) {
             (res) => {
                 setLoading(false)
                 guardando.current = false
+                imagesHaveChanged.current = false
                 localStorage.clear();
             }
         ).catch((err) => {
             console.log(err);
             guardando.current = false
-            imagesHaveChanged.current = false
             localStorage.clear();
         })
     }
 
 
-
-
     function handleDragEnd(e) {
         imagesHaveChanged.current = true
-
+        // saveBefore()
 
         const { active, over } = e
         const oldIndex = ediciones.findIndex((item) => item.id === active.id)
@@ -297,7 +298,7 @@ export default function DynamicHome({ loggin }) {
         const newOrder = arrayMove(ediciones, oldIndex, newIndex)
 
         setEdiciones(newOrder)
-        dataEditableRef.current.options = newOrder
+        dataEditableRef0.current.options = newOrder
 
     }
 
@@ -305,21 +306,15 @@ export default function DynamicHome({ loggin }) {
 
     //🧐
     // useEffect(() => {
-    //   console.log("Pagina inicio");
+    //     console.log("Pagina 0");
     // }, [])
 
 
 
 
     // useEffect(() => {
-    //   if (ediciones) console.log("ediciones", ediciones);
+    //     if (ediciones) console.log("ediciones", ediciones);
     // }, [ediciones])
-
-
-
-    function handleMenu() {
-        setShowMenu(!showMenu)
-    }
 
     function propagar(targets, cambio) {
         // console.log("TARGETS: ", targets);
@@ -332,51 +327,59 @@ export default function DynamicHome({ loggin }) {
         })
     }
 
+
     function handleVisionItem(id) {
-        // console.log("ESTADO ACTUAL: ", dataEditableRef.current.options.find((el) => el.id == id).visible);
-        let cambio = !dataEditableRef.current.options.find((el) => el.id == id).visible
-        dataEditableRef.current.options.find((el) => el.id == id).visible = !dataEditableRef.current.options.find((el) => el.id == id).visible
-        // dataEditableRef.current.options.find((el) => el.id == id).visible = true
+        let cambio = !dataEditableRef0.current.options.find((el) => el.id == id).visible
+        dataEditableRef0.current.options.find((el) => el.id == id).visible = !dataEditableRef0.current.options.find((el) => el.id == id).visible
+        // dataEditableRef0.current.options.find((el) => el.id == id).visible = true
 
-
-        if (dataEditableRef.current.options.find((el) => el.id == id).options[0]) {
+        if (dataEditableRef0.current.options.find((el) => el.id == id).options[0]) {
             // console.log("cambio:", cambio);
-            propagar(dataEditableRef.current.options.find((el) => el.id == id).options, cambio)
+            propagar(dataEditableRef0.current.options.find((el) => el.id == id).options, cambio)
         }
-        setEdiciones([...dataEditableRef.current.options])
+        setEdiciones([...dataEditableRef0.current.options])
+
     }
-
-
 
 
 
     return (<main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
         <header>
 
-            <img className='title ' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
-            {!editionMode && showMenu ?
+            <Link prefetch={false} href={`/`}>
+
+                <img className='title' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
+            </Link>
+            {/* <svg className='esquinaSupDerecha' xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
+                <path d="M0 0H138V138L0 0Z" fill="#b32624" />
+            </svg> */}
+
+            {logged ? !editionMode && showMenu ?
                 <svg className='esquinaSupDerecha menuSuperior' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none" alt="esquinaSupDerecha">
                     <path d="M0 0H138V138L0 0Z" fill="#900020" />
                 </svg>
                 : <svg className={`esquinaSupDerecha ${!editionMode && "cursor-pointer"}`} onClick={handleMenu} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
                     <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                </svg>
+                </svg> : <svg className='esquinaSupDerecha' xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
+                <path d="M0 0H138V138L0 0Z" fill="#b32624" />
+            </svg>
             }
+
         </header>
         <section>
-            <h1 className="mx-8 text-center font-bold border-b-2 border-b-black">Bienvenido a La Vene San Juan</h1>
+            <h2>{name} - INICIO</h2>
         </section>
-        <article>
 
-            {/*Primer pagina*/}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <article>
 
-            {editionMode && logged && data && ediciones[0] ? (<>
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    {     /*Modo ediciones*/}
-                    <div className='containerSucursales' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
+                {/*Primer pagina*/}
+
+                {editionMode && logged && data && ediciones[0] ? (<>
+                    {  /*Modo ediciones*/}
+                    <div className='containerInicio' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
                         <SortableContext items={ediciones.map((e) => e.id)} strategy={verticalListSortingStrategy}>
                             {ediciones.map((e, i) => {
-
                                 return <ListItem imagesHaveChanged={imagesHaveChanged} handleVisionItem={handleVisionItem} key={e.id} handleBannerEliminate={handleBannerEliminate} logged={logged} e={e} dragActive={dragActive} toEliminate={toEliminate} />
                             })}
                         </SortableContext>
@@ -389,20 +392,21 @@ export default function DynamicHome({ loggin }) {
                         </div>
                     </div>}
 
-                </DndContext>
-            </>)
-                : <>
-                    <div className='containerSucursales' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
-                        { /*Modo normal*/}
-                        {ediciones[0] && ediciones.map((e, i) => {
-                            return <div key={e.id} ref={cardRef} className={e.visible ? "" : "hidden"}>
-                                <Link prefetch={true} className="link-pagSuc" key={e.id} href={`/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
-                            </div>
-                        })}
-                    </div>
-                </>
-            }
-        </article >
+
+                </>)
+                    : <>
+                        <div className='containerInicio' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
+                            {/*Modo normal*/}
+                            {ediciones[0] && ediciones.map((e, i) => {
+                                return <div key={e.id} id={e.id} ref={cardRef} className={e.visible ? "" : "hidden"}>
+                                    <Link prefetch={true} style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Card.webp)` }} className={`link-pag1`} href={`/${name.replaceAll(" ", "-")}/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
+                                </div>
+                            })}
+                        </div>
+                    </>
+                }
+            </article>
+        </DndContext>
         <footer>
             {logged ? loading ? <span className='[font-size:18px] font-bold mr-4'> Guardando</span> :
                 <button className={editionMode ? "editionMode" : "viewerMode"} onClick={handleEditionMode}> {editionMode ?
@@ -427,29 +431,43 @@ export default function DynamicHome({ loggin }) {
                         </g>
                     </svg>}
                 </button> : ""}
-            {!editionMode && showMenu ? <svg className='esquinaInfIzquierda menuInferior' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
+            {/* {!editionMode && <svg className='esquinaInfIzquierda' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
+                <path d="M138 138H0V0L138 138Z" fill="#b32624" />
+            </svg>} */}
+            {logged ? !editionMode && showMenu ? <svg className='esquinaInfIzquierda menuInferior' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
                 <path d="M138 138H0V0L138 138Z" fill="#900020" />
             </svg> : !editionMode && <svg className='esquinaInfIzquierda cursor-pointer' onClick={handleMenu} alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
                 <path d="M138 138H0V0L138 138Z" fill="#b32624" />
+            </svg> : <svg className='esquinaInfIzquierda' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
+                <path d="M138 138H0V0L138 138Z" fill="#b32624" />
             </svg>}
+
+
             {logged && !toEliminate && editionMode ? <button className={dragActive ? "modoArrastre" : "modoEscritura"} onClick={() => setDragActive(!dragActive)}>{dragActive ? "Arrastre" : "Escritura"}</button> : ""}
-            {logged ?
-                !toEliminate && editionMode ?
-                    <button className='añadirProducto' onClick={handleAddCategory}><span>❌</span>Añadir <br /> categoría</button> :
-                    "" :
+            {logged ? !toEliminate && editionMode ? <button className='añadirProducto' onClick={handleAddCategory}><span>❌</span>Añadir <br /> categoría</button> : "" :
                 <div className="flex mr-6">
-                    {imagesInterface && dataAllRef.current && dataAllRef.current.interface.socialMedia.map((e) => {
-                        return <Link href={e.link} target="_blank" key={e.id} className="redes"><img src={imagesInterface.socialMedia.find((el) => el.idElement === e.id).src} id={e.id} alt={e.name} /></Link>
-                    })}
+                    {/* {imagesInterface && dataAllRef0.current && dataAllRef0.current.interface.socialMedia.map((e) => {
+                        return <Link href={e.link} key={e.id} target="_blank" className="redes"><img src={imagesInterface.socialMedia.find((el) => el.idElement === e.id).src} id={e.id} alt={e.name} /></Link>
+                    })} */}
+
+                    <Link href={"https://www.facebook.com/share/dypxidhHS4xv43Ye/?mibextid=qi2Omg"} style={{ backgroundPosition: "-46px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                    <Link href={"https://www.instagram.com/lavenesanjuan?igsh=MW16OWtsc3Jha2g3eA=="} style={{ backgroundPosition: "-95px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                    {name == "Sucursal Estadio" ?
+                        <Link href={"https://api.whatsapp.com/send?phone=%2B542644572435&text=Hola%20%F0%9F%91%8B%0AMe%20gustar%C3%ADa%20hacer%20una%20reserva%0AGracias&type=phone_number&app_absent=0"} style={{ backgroundPosition: "0px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                        :
+                        name == "Sucursal Cabaña" ?
+                            <Link href={"https://api.whatsapp.com/send?phone=%2B542646264365&text=Hola%20%F0%9F%91%8B%0AMe%20gustar%C3%ADa%20hacer%20una%20reserva%0AGracias&type=phone_number&app_absent=0"} style={{ backgroundPosition: "0px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                            : ""
+                    }
+
                 </div>
-                // <img className="redes" src={`${process.env.NEXT_PUBLIC_URL}/images/Social.webp`} alt="redes" />
             }
         </footer>
-
         {!editionMode && showMenu ? logged ?
             <MenuLogged setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} />
             : <MenuLogin setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} /> : ""}
+
     </main>
     );
-}
 
+}

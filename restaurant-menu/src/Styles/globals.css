@@ -1421,31 +1421,6 @@ main {
   animation: rotation 1s linear infinite;
 }
 
-.loaderGalery {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: inline-block;
-  border-top: 3px solid #7a0000;
-  border-right: 3px solid transparent;
-  margin: auto;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-}
-
-.loaderFooter {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: inline-block;
-  border-top: 3px solid #7a0000;
-  border-right: 3px solid transparent;
-  margin-bottom: 80px;
-
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-}
-
 @keyframes rotation {
   0% {
     transform: rotate(0deg);

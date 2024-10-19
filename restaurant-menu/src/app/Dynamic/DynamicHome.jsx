@@ -4,15 +4,15 @@ import useData from "@/Hooks/useData";
 import { useContext, useEffect, useRef, useState } from "react";
 import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import ListItem from "./ListItem";
+import ListItem from "../ListItem";
 import { SessionContext } from "@/Context/SessionContext";
 import useAutoLogin from "@/Hooks/useAutoLogin";
-
 import useImagesInterface from "@/Hooks/useImagesInterface";
-import MenuLogged from "./Components/Menu/MenuLogged";
-import MenuLogin from "./Components/Menu/MenuLogin";
+import MenuLogged from "@/app/Components/Menu/MenuLogged";
+import MenuLogin from "@/app/Components/Menu/MenuLogin";
+
 export const runtime = 'edge';
-export default function DynamicHome({ loggin }) {
+export default function DynamicHome() {
 
     useAutoLogin()
     const { logged } = useContext(SessionContext)
@@ -54,10 +54,6 @@ export default function DynamicHome({ loggin }) {
 
 
     useEffect(() => {
-        if (loggin) {
-            setShowMenu(true)
-            loggin = false
-        }
         if (guardando.current) return
         if (data && data.options) {
             dataAllRef.current = structuredClone(data)
@@ -319,6 +315,7 @@ export default function DynamicHome({ loggin }) {
 
     function handleMenu() {
         setShowMenu(!showMenu)
+        // console.log("hola");
     }
 
     function propagar(targets, cambio) {
@@ -438,10 +435,16 @@ export default function DynamicHome({ loggin }) {
                     <button className='añadirProducto' onClick={handleAddCategory}><span>❌</span>Añadir <br /> categoría</button> :
                     "" :
                 <div className="flex mr-6">
-                    {imagesInterface && dataAllRef.current && dataAllRef.current.interface.socialMedia.map((e) => {
+                    {/* REDES SOCIALES */}
+                    {/* {imagesInterface && dataAllRef.current && dataAllRef.current.interface.socialMedia.map((e) => {
                         return <Link href={e.link} target="_blank" key={e.id} className="redes"><img src={imagesInterface.socialMedia.find((el) => el.idElement === e.id).src} id={e.id} alt={e.name} /></Link>
-                    })}
+                    })} */}
+                    <Link href={"https://www.facebook.com/share/dypxidhHS4xv43Ye/?mibextid=qi2Omg"} style={{ backgroundPosition: "-46px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+                    <Link href={"https://www.instagram.com/lavenesanjuan?igsh=MW16OWtsc3Jha2g3eA=="} style={{ backgroundPosition: "-95px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
+
                 </div>
+
+
                 // <img className="redes" src={`${process.env.NEXT_PUBLIC_URL}/images/Social.webp`} alt="redes" />
             }
         </footer>
