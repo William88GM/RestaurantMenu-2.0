@@ -1,5 +1,5 @@
 
-export default async function Article({ name, name1, name2 }) {
+export default async function ArticleS({ name, name1, name2 }) {
 
     let data = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data`)
     data = await data.json()
@@ -26,7 +26,7 @@ export default async function Article({ name, name1, name2 }) {
             }
         }
     }
-
+    console.log("dataa", data);
 
     let imagesOptions = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/getImages`, {
         method: "POST",

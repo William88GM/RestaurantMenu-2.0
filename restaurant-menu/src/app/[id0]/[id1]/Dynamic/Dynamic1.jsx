@@ -2,7 +2,6 @@
 import useData from '@/Hooks/useData'
 import Link from 'next/link'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import ListItem from '../ListItem'
 import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from '@dnd-kit/core'
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SessionContext } from '@/Context/SessionContext'
@@ -10,8 +9,13 @@ import useAutoLogin from '@/Hooks/useAutoLogin'
 import loadFromLocalStorage from '@/Hooks/getCache'
 import saveToLocalStorage from '@/Hooks/setCache'
 import useImagesInterface from '@/Hooks/useImagesInterface'
-import MenuLogged from '@/app/Components/Menu/MenuLogged'
-import MenuLogin from '@/app/Components/Menu/MenuLogin'
+import MenuLogged from '@/GlobalComponents/Menu/MenuLogged'
+import MenuLogin from '@/GlobalComponents/Menu/MenuLogin'
+import Header from '@/GlobalComponents/Header/Header'
+import Section from '@/GlobalComponents/Section/Section'
+import Article from '@/GlobalComponents/Article/Article'
+import EditionMode1 from './EditionMode/EditionMode1'
+import NormalMode1 from './NormalMode/NormalMode1'
 export const runtime = 'edge';
 export default function Dynamic1({ params }) {
 
@@ -402,72 +406,14 @@ export default function Dynamic1({ params }) {
 
     return (
         <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
-            <header>
-                <Link prefetch={false} href={`/${params.id0}`}>
-                    <img className='title' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
-                </Link>
-                {logged ? !editionMode && showMenu ?
-                    <svg className='esquinaSupDerecha menuSuperior' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none" alt="esquinaSupDerecha">
-                        <path d="M0 0H138V138L0 0Z" fill="#900020" />
-                    </svg>
-                    : <svg className={`esquinaSupDerecha ${!editionMode && "cursor-pointer"}`} onClick={handleMenu} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                        <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                    </svg> : <svg className='esquinaSupDerecha' xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                    <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                </svg>
-                }
-            </header>
+
+            <Header navigateTo={`/${params.id0}`} handleMenu={handleMenu} logged={logged} editionMode={editionMode} showMenu={showMenu} />
+
+            <Section navigateTo={`/${params.id0}`} previousPage={name} actualPage={name1} editionMode={editionMode} viewerMode={null} handleChangeView={null} />
+
+            <Article handleEliminate={handleEliminate} dataEditableRef={dataEditableRef1} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} logged={logged} data={data} ediciones={ediciones} EditionMode={EditionMode1} setEdiciones={setEdiciones} NormalMode={NormalMode1} baseURL={`${name1.replaceAll(" ", "-")}`} editionModeState={editionMode} galleryRef={galleryRef} />
 
 
-            <section>
-                <Link className='flex' prefetch={false} href={`/${params.id0}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none">
-                        <path d="M4 10L3.29289 10.7071L2.58579 10L3.29289 9.29289L4 10ZM21 18C21 18.5523 20.5523 19 20 19C19.4477 19 19 18.5523 19 18L21 18ZM8.29289 15.7071L3.29289 10.7071L4.70711 9.29289L9.70711 14.2929L8.29289 15.7071ZM3.29289 9.29289L8.29289 4.29289L9.70711 5.70711L4.70711 10.7071L3.29289 9.29289ZM4 9L14 9L14 11L4 11L4 9ZM21 16L21 18L19 18L19 16L21 16ZM14 9C17.866 9 21 12.134 21 16L19 16C19 13.2386 16.7614 11 14 11L14 9Z" fill="#33363F" />
-                    </svg>
-                    <h2 className='ml-2'>INICIO</h2>
-                </Link>
-                <h3 className='ml-8'>{name1}</h3>
-            </section>
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-
-                <article>
-                    {editionMode && logged && data && ediciones[0] ? (<>
-                        <div className='container' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
-                            {/*Primer pagina*/}
-
-                            { /*Modo ediciones*/}
-                            <SortableContext items={ediciones.map((e) => e.id)} strategy={verticalListSortingStrategy}>
-                                {ediciones[0] && ediciones.map((e, i) => {
-                                    return <ListItem imagesHaveChanged={imagesHaveChanged} handleVisionItem={handleVisionItem} handleBannerEliminate={handleBannerEliminate} key={e.id} i={i} ediciones={ediciones} setEdiciones={setEdiciones} logged={logged} e={e} dragActive={dragActive} toEliminate={toEliminate} />
-                                })}
-                            </SortableContext>
-                        </div>
-
-                        {toEliminate && <div className='modal'>
-                            <p>¿Está seguro que desea elminiar la categoría <b> {`${ediciones.find((el) => el.id == toEliminate).name}`}</b> y todos sus hijos ?</p>
-                            <div>
-                                <button className='text-rose-500 [font-weight:bold]' onClick={handleEliminate}>ELIMINAR</button>
-                                <button className='text-green-500 [font-weight:bold]' onClick={handleBannerEliminate}>CANCELAR</button>
-                            </div>
-                        </div>}
-
-                    </>)
-                        : <>
-                            <div className='container' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
-                                {/*Modo normal*/}
-                                {ediciones[0] && ediciones.map((e, i) => {
-                                    return <div key={e.id} className={e.visible ? 'link-pag2' : "hidden"}>
-                                        <Link prefetch={true} id={`link-pag2-${e.id}`} className='link-pag2 [padding:2px] rounded-md' href={`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
-                                        {e.image ? <img src={e.image} className="cursor-pointer" onClick={() => document.getElementById(`link-pag2-${e.id}`).click()} width="30px" height="30px" alt={e.name} /> : <div className="animate-pulse space-x-4 bg-red-300 aspect-square pr-6 h-[30px] w-[30px] rounded"></div>}
-
-
-                                    </div>
-                                })}
-                            </div>
-                        </>
-                    }
-                </article >
-            </DndContext>
             <footer>
                 {logged ? loading ? <span className='[font-size:18px] font-bold mr-4'> Guardando</span> :
                     <button className={editionMode ? "editionMode" : "viewerMode"} onClick={handleEditionMode}> {editionMode ?

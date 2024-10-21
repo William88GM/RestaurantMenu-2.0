@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import React from 'react'
 
-export default function ListItem({ imagesHaveChanged, handleVisionItem, handleBannerEliminate, e, dragActive, logged, toEliminate }) {
+export default function ListItemsHome({ imagesHaveChanged, handleVisionItem, handleBannerEliminate, e, dragActive, logged, toEliminate }) {
 
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: e.id })
@@ -13,12 +13,12 @@ export default function ListItem({ imagesHaveChanged, handleVisionItem, handleBa
     }
     return (dragActive ? (
         <div {...attributes} {...listeners} id={e.id} style={style} key={e.id} className='relative' ref={setNodeRef}>
-            <span style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Card.webp)` }} className='link-pag1 [padding:2px] rounded-md' >{e.name}</span>
+            <span className='link-pagSuc [padding:2px] rounded-md' >{e.name}</span>
         </div>
     ) : (
         <div key={e.id} id={e.id} className='relative editionModeItem' ref={setNodeRef}>
-            <span style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Card.webp)` }} contentEditable suppressContentEditableWarning={true} className='link-pag1 [padding:2px] rounded-md' >{e.name}</span>
-            <button className='absolute right-[0%] top-[0%] text-xl' id={e.id} onClick={handleBannerEliminate}>❌</button>
+            <span contentEditable suppressContentEditableWarning={true} className='link-pagSuc [padding:2px] rounded-md' >{e.name}</span>
+            <button className='absolute left-[-38px] top-[50%] translate-y-[-50%] text-xl p-1' id={e.id} onClick={handleBannerEliminate}>❌</button>
             {logged && <button className='buttonHide'>
                 {e.visible ?
                     <svg onClick={() => handleVisionItem(e.id)} className="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" fill="none">

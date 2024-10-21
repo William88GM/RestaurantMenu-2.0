@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { Suspense } from "react"
-import Article from "./Article";
 import Footer from "./Footer";
+import ArticleS from "./ArticleS";
 
 export default async function Static2({ params }) {
 
@@ -51,7 +50,7 @@ export default async function Static2({ params }) {
 
             <article>
                 <div className='flex'>
-                    <Article name={name} name1={name1} name2={name2} />
+                    <ArticleS name={name} name1={name1} name2={name2} />
                 </div>
             </article>
 

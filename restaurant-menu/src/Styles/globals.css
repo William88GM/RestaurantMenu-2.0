@@ -1489,3 +1489,8 @@ input:checked+.slider:before {
   animation-duration: .4s;
   animation-name: animationButtonViewMode;
 }
+
+.el-ojito {
+  right: 8px;
+  margin-right: 8px;
+}

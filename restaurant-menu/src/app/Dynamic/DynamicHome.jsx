@@ -2,14 +2,16 @@
 import Link from "next/link";
 import useData from "@/Hooks/useData";
 import { useContext, useEffect, useRef, useState } from "react";
-import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import ListItem from "../ListItem";
+
 import { SessionContext } from "@/Context/SessionContext";
 import useAutoLogin from "@/Hooks/useAutoLogin";
 import useImagesInterface from "@/Hooks/useImagesInterface";
-import MenuLogged from "@/app/Components/Menu/MenuLogged";
-import MenuLogin from "@/app/Components/Menu/MenuLogin";
+import MenuLogged from "@/GlobalComponents/Menu/MenuLogged";
+import MenuLogin from "@/GlobalComponents/Menu/MenuLogin";
+import Header from "@/GlobalComponents/Header/Header";
+import EditionModeHome from "./EditionMode/EditionModeHome";
+import NormalModeHome from "./NormalMode/NormalModeHome";
+import Article from "@/GlobalComponents/Article/Article";
 
 export const runtime = 'edge';
 export default function DynamicHome() {
@@ -20,10 +22,6 @@ export default function DynamicHome() {
     const imagesHaveChanged = useRef(false)
 
 
-    const sensors = useSensors(
-        useSensor(MouseSensor),
-        useSensor(TouchSensor)
-    );
 
 
 
@@ -282,20 +280,7 @@ export default function DynamicHome() {
 
 
 
-    function handleDragEnd(e) {
-        imagesHaveChanged.current = true
 
-
-        const { active, over } = e
-        const oldIndex = ediciones.findIndex((item) => item.id === active.id)
-        const newIndex = ediciones.findIndex((item) => item.id === over.id)
-
-        const newOrder = arrayMove(ediciones, oldIndex, newIndex)
-
-        setEdiciones(newOrder)
-        dataEditableRef.current.options = newOrder
-
-    }
 
 
 
@@ -348,58 +333,19 @@ export default function DynamicHome() {
 
 
     return (<main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
-        <header>
 
-            <img className='title ' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
-            {!editionMode && showMenu ?
-                <svg className='esquinaSupDerecha menuSuperior' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none" alt="esquinaSupDerecha">
-                    <path d="M0 0H138V138L0 0Z" fill="#900020" />
-                </svg>
-                : <svg className={`esquinaSupDerecha ${!editionMode && "cursor-pointer"}`} onClick={handleMenu} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                    <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                </svg>
-            }
-        </header>
+        <Header navigateTo={`/`} isHome={true} handleMenu={handleMenu} logged={logged} editionMode={editionMode} showMenu={showMenu} />
+
+        {/* <Section navigateTo={`/`} previousPage={"Home"} actualPage={"Home"} editionMode={editionMode} viewerMode={null} handleChangeView={null} /> */}
+
         <section>
             <h1 className="mx-8 text-center font-bold border-b-2 border-b-black">Bienvenido a La Vene San Juan</h1>
         </section>
-        <article>
 
-            {/*Primer pagina*/}
+        <Article handleEliminate={handleEliminate} dragActive={dragActive} toEliminate={toEliminate} imagesHaveChanged={imagesHaveChanged} logged={logged} handleBannerEliminate={handleBannerEliminate} handleVisionItem={handleVisionItem} EditionMode={EditionModeHome} NormalMode={NormalModeHome} baseURL={`/`} editionModeState={editionMode} data={data} ediciones={ediciones} setEdiciones={setEdiciones} dataEditableRef={dataEditableRef} galleryRef={galleryRef} cardRef={cardRef} />
 
-            {editionMode && logged && data && ediciones[0] ? (<>
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    {     /*Modo ediciones*/}
-                    <div className='containerSucursales' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
-                        <SortableContext items={ediciones.map((e) => e.id)} strategy={verticalListSortingStrategy}>
-                            {ediciones.map((e, i) => {
 
-                                return <ListItem imagesHaveChanged={imagesHaveChanged} handleVisionItem={handleVisionItem} key={e.id} handleBannerEliminate={handleBannerEliminate} logged={logged} e={e} dragActive={dragActive} toEliminate={toEliminate} />
-                            })}
-                        </SortableContext>
-                    </div>
-                    {toEliminate && <div className='modal'>
-                        <p>¿Está seguro que desea elminiar la categoría <b> {`${ediciones.find((el) => el.id == toEliminate).name}`}</b> y todos sus hijos?</p>
-                        <div>
-                            <button className='text-rose-500 [font-weight:bold]' onClick={handleEliminate}>ELIMINAR</button>
-                            <button className='text-green-500 [font-weight:bold]' onClick={handleBannerEliminate}>CANCELAR</button>
-                        </div>
-                    </div>}
 
-                </DndContext>
-            </>)
-                : <>
-                    <div className='containerSucursales' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
-                        { /*Modo normal*/}
-                        {ediciones[0] && ediciones.map((e, i) => {
-                            return <div key={e.id} ref={cardRef} className={e.visible ? "" : "hidden"}>
-                                <Link prefetch={true} className="link-pagSuc" key={e.id} href={`/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
-                            </div>
-                        })}
-                    </div>
-                </>
-            }
-        </article >
         <footer>
             {logged ? loading ? <span className='[font-size:18px] font-bold mr-4'> Guardando</span> :
                 <button className={editionMode ? "editionMode" : "viewerMode"} onClick={handleEditionMode}> {editionMode ?

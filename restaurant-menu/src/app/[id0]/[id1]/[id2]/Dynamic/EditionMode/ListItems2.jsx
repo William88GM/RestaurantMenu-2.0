@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import React from 'react'
 
-export default function GalleryItem({ imagesHaveChanged, viewerMode, data, handleVisionItem, e, logged, toEliminate, handleBannerEliminate, dragActive, i, ediciones, setEdiciones }) {
+export default function ListItems2({ imagesHaveChanged, viewerMode, data, handleVisionItem, e, logged, toEliminate, handleBannerEliminate, dragActive, i, ediciones, setEdiciones }) {
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: e.id })
 

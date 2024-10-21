@@ -6,12 +6,17 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import ListItem from '../ListItem'
+import ListItem from './EditionMode/ListItems0'
 import { SessionContext } from '@/Context/SessionContext'
 import useAutoLogin from '@/Hooks/useAutoLogin'
 import useImagesInterface from '@/Hooks/useImagesInterface'
-import MenuLogged from '@/app/Components/Menu/MenuLogged'
-import MenuLogin from '@/app/Components/Menu/MenuLogin'
+import MenuLogged from '@/GlobalComponents/Menu/MenuLogged'
+import MenuLogin from '@/GlobalComponents/Menu/MenuLogin'
+import Header from '@/GlobalComponents/Header/Header'
+import EditionMode0 from './EditionMode/EditionMode0'
+import NormalMode0 from './NormalMode/NormalMode0'
+import Section from '@/GlobalComponents/Section/Section'
+import Article from '@/GlobalComponents/Article/Article'
 
 
 export const runtime = 'edge';
@@ -344,69 +349,18 @@ export default function Dynamic0({ params }) {
 
 
     return (<main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
-        <header>
 
-            <Link prefetch={false} href={`/`}>
+        <Header navigateTo={`/`} handleMenu={handleMenu} logged={logged} editionMode={editionMode} showMenu={showMenu} />
 
-                <img className='title' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
-            </Link>
-            {/* <svg className='esquinaSupDerecha' xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-            </svg> */}
+        <Section navigateTo={`/`} previousPage={"Home"} actualPage={name} editionMode={editionMode} viewerMode={null} handleChangeView={null} />
 
-            {logged ? !editionMode && showMenu ?
-                <svg className='esquinaSupDerecha menuSuperior' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none" alt="esquinaSupDerecha">
-                    <path d="M0 0H138V138L0 0Z" fill="#900020" />
-                </svg>
-                : <svg className={`esquinaSupDerecha ${!editionMode && "cursor-pointer"}`} onClick={handleMenu} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                    <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                </svg> : <svg className='esquinaSupDerecha' xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-            </svg>
-            }
-
-        </header>
-        <section>
+        {/* <section>
             <h2>{name} - INICIO</h2>
-        </section>
+        </section> */}
 
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <article>
-
-                {/*Primer pagina*/}
-
-                {editionMode && logged && data && ediciones[0] ? (<>
-                    {  /*Modo ediciones*/}
-                    <div className='containerInicio' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
-                        <SortableContext items={ediciones.map((e) => e.id)} strategy={verticalListSortingStrategy}>
-                            {ediciones.map((e, i) => {
-                                return <ListItem imagesHaveChanged={imagesHaveChanged} handleVisionItem={handleVisionItem} key={e.id} handleBannerEliminate={handleBannerEliminate} logged={logged} e={e} dragActive={dragActive} toEliminate={toEliminate} />
-                            })}
-                        </SortableContext>
-                    </div>
-                    {toEliminate && <div className='modal'>
-                        <p>¿Está seguro que desea elminiar la categoría <b> {`${ediciones.find((el) => el.id == toEliminate).name}`}</b> y todos sus hijos?</p>
-                        <div>
-                            <button className='text-rose-500 [font-weight:bold]' onClick={handleEliminate}>ELIMINAR</button>
-                            <button className='text-green-500 [font-weight:bold]' onClick={handleBannerEliminate}>CANCELAR</button>
-                        </div>
-                    </div>}
+        <Article handleEliminate={handleEliminate} dataEditableRef={dataEditableRef0} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} EditionMode={EditionMode0} NormalMode={NormalMode0} baseURL={`${name.replaceAll(" ", "-")}`} editionModeState={editionMode} logged={logged} data={data} ediciones={ediciones} setEdiciones={setEdiciones} galleryRef={galleryRef} />
 
 
-                </>)
-                    : <>
-                        <div className='containerInicio' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
-                            {/*Modo normal*/}
-                            {ediciones[0] && ediciones.map((e, i) => {
-                                return <div key={e.id} id={e.id} ref={cardRef} className={e.visible ? "" : "hidden"}>
-                                    <Link prefetch={true} style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Card.webp)` }} className={`link-pag1`} href={`/${name.replaceAll(" ", "-")}/${e.name.replaceAll(" ", "-")}`}>{e.name}</Link>
-                                </div>
-                            })}
-                        </div>
-                    </>
-                }
-            </article>
-        </DndContext>
         <footer>
             {logged ? loading ? <span className='[font-size:18px] font-bold mr-4'> Guardando</span> :
                 <button className={editionMode ? "editionMode" : "viewerMode"} onClick={handleEditionMode}> {editionMode ?

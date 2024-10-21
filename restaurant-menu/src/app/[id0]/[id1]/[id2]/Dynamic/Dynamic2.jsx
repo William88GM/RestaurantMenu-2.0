@@ -1,13 +1,10 @@
-
-
-
 "use client"
 import useData from '@/Hooks/useData'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import GalleryItem from '../GalleryItem'
+import GalleryItem from './EditionMode/ListItems2'
 import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from '@dnd-kit/core'
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SessionContext } from '@/Context/SessionContext'
@@ -15,8 +12,16 @@ import useAutoLogin from '@/Hooks/useAutoLogin'
 import loadFromLocalStorage from '@/Hooks/getCache'
 import saveToLocalStorage from '@/Hooks/setCache'
 import useImagesInterface from '@/Hooks/useImagesInterface'
-import MenuLogged from '@/app/Components/Menu/MenuLogged'
-import MenuLogin from '@/app/Components/Menu/MenuLogin'
+import MenuLogged from '@/GlobalComponents/Menu/MenuLogged'
+import MenuLogin from '@/GlobalComponents/Menu/MenuLogin'
+import Header from '@/GlobalComponents/Header/Header'
+import Section from '@/GlobalComponents/Section/Section'
+
+import ListItem from '../../Dynamic/EditionMode/ListItems1'
+import ListItems2 from './EditionMode/ListItems2'
+import EditionMode2 from './EditionMode/EditionMode2'
+import NormalMode2 from './NormalMode/NormalMode2'
+import Article from '@/GlobalComponents/Article/Article'
 
 export const runtime = 'edge';
 
@@ -504,142 +509,13 @@ export default function Dynamic2({ params }) {
     return (
         <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
 
-            <header>
 
+            <Header navigateTo={`/${params.id0}`} handleMenu={handleMenu} logged={logged} editionMode={editionMode} showMenu={showMenu} />
 
-                <Link prefetch={false} href={`/${params.id0}`}>
-                    <img className='title' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
-                </Link>
-                {logged ? !editionMode && showMenu ?
-                    <svg className='esquinaSupDerecha menuSuperior' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none" alt="esquinaSupDerecha">
-                        <path d="M0 0H138V138L0 0Z" fill="#900020" />
-                    </svg>
-                    : <svg className={`esquinaSupDerecha ${!editionMode && "cursor-pointer"}`} onClick={handleMenu} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                        <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                    </svg> : <svg className='esquinaSupDerecha' xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                    <path d="M0 0H138V138L0 0Z" fill="#b32624" />
-                </svg>
-                }
+            <Section navigateTo={`/${params.id0}/${params.id1}`} previousPage={name1} actualPage={name2} editionMode={editionMode} viewerMode={viewerMode} handleChangeView={handleChangeView} />
 
-                {/*FLOTANTE */}
-            </header>
+            <Article handleEliminate={handleEliminate} dataEditableRef={dataEditableRef2} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} logged={logged} data={data} ediciones={ediciones} p={p} handleDetails={handleDetails} setEdiciones={setEdiciones} viewerMode={viewerMode} EditionMode={EditionMode2} NormalMode={NormalMode2} details={details} editionModeState={editionMode} viewerModeState={viewerMode} galleryRef={galleryRef} baseURL={`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${name2.replaceAll(" ", "-")}`} />
 
-
-            <section className='flex justify-between flex-row items-center'>
-                <div>
-                    <Link prefetch={false} className='flex' href={`/${params.id0}/${params.id1}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none">
-                            <path d="M4 10L3.29289 10.7071L2.58579 10L3.29289 9.29289L4 10ZM21 18C21 18.5523 20.5523 19 20 19C19.4477 19 19 18.5523 19 18L21 18ZM8.29289 15.7071L3.29289 10.7071L4.70711 9.29289L9.70711 14.2929L8.29289 15.7071ZM3.29289 9.29289L8.29289 4.29289L9.70711 5.70711L4.70711 10.7071L3.29289 9.29289ZM4 9L14 9L14 11L4 11L4 9ZM21 16L21 18L19 18L19 16L21 16ZM14 9C17.866 9 21 12.134 21 16L19 16C19 13.2386 16.7614 11 14 11L14 9Z" fill="#33363F" />
-                        </svg>
-                        <h2 className='ml-2'>{name1}</h2>
-                    </Link>
-                    <h3 className='ml-8'>{name2}</h3>
-                </div>
-                {/* {viewerMode !== null && !logged && <label className="toggle-switch">
-                    <input type="checkbox" checked={viewerMode} name='productsListViewMode' onChange={handleChangeView} />
-                    <span className="slider"></span></label>} */}
-
-                {viewerMode !== null && !editionMode && <>{
-                    viewerMode ?
-                        <svg className={`cursor-pointer buttonViewMode border-pink-950 border-2 rounded-lg p-1  `} onClick={handleChangeView} xmlns="http://www.w3.org/2000/svg" width="45px" height="45px" viewBox="0 0 24 24" fill="none">
-                            <path d="M8 6L21 6.00078M8 12L21 12.0008M8 18L21 18.0007M3 6.5H4V5.5H3V6.5ZM3 12.5H4V11.5H3V12.5ZM3 18.5H4V17.5H3V18.5Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        :
-                        <svg className={`cursor-pointer buttonViewMode border-pink-950 border-2 rounded-lg p-1 `} onClick={handleChangeView} xmlns="http://www.w3.org/2000/svg" width="45px" height="45px" viewBox="0 0 618 618" fill="none">
-                            <g clipPath="url(#clip0_7_11)">
-                                <path d="M384 153H234C220.667 153 209 163.885 209 176.325V440.675C209 453.115 220.667 464 234 464H384C397.333 464 409 453.115 409 440.675V176.325C409 163.885 397.333 153 384 153Z" fill="#fff" />
-                                <path d="M384 516.802H234C220.667 516.802 209 525.103 209 534.589V736.173C209 745.659 220.667 753.96 234 753.96H384C397.333 753.96 409 745.659 409 736.173V534.589C409 525.103 397.333 516.802 384 516.802Z" fill="#7d0032" />
-                                <path d="M384 -136.732H234C220.667 -136.732 209 -128.432 209 -118.946V82.6382C209 92.1245 220.667 100.425 234 100.425H384C397.333 100.425 409 92.1245 409 82.6382V-118.946C409 -128.432 397.333 -136.732 384 -136.732Z" fill="#7d0032" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_7_11">
-                                    <rect x="116" width="386" height="618" rx="63" fill="white" />
-                                </clipPath>
-                            </defs>
-                        </svg>
-
-
-                }
-                </>}
-            </section>
-
-
-
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <article>
-                    {editionMode && logged && data && viewerMode !== null && ediciones[0] ? (<>
-
-
-                        {/*Modo ediciones*/}
-                        <div className='flex'>
-                            {/* <button className='flecha' onClick={handleScrollLeft}><img style={{ transform: "rotate(180deg)" }} src={`${process.env.NEXT_PUBLIC_URL}/images/flecha.webp`} /></button> */}
-                            <div ref={galleryRef} style={{ scrollBehavior: "smooth" }} className={dragActive ? "galery galery-small" : viewerMode ? "galery galery-small" : "galery"}>
-
-                                <SortableContext items={ediciones.map((e) => e.id)} strategy={verticalListSortingStrategy}>
-
-                                    {ediciones[0] && ediciones.map((e, i) => {
-                                        return (
-                                            <GalleryItem imagesHaveChanged={imagesHaveChanged} handleVisionItem={handleVisionItem} viewerMode={viewerMode} data={data} i={i} ediciones={ediciones} setEdiciones={setEdiciones} dragActive={dragActive} key={e.id} e={e} logged={logged} toEliminate={toEliminate} handleBannerEliminate={handleBannerEliminate} />
-                                        )
-                                    })}
-                                </SortableContext>
-
-                            </div>
-                            {/* <button className='flecha' onClick={handleScrollRight}><img src={`${process.env.NEXT_PUBLIC_URL}/images/flecha.webp`} /></button> */}
-                        </div>
-
-                        { /*Banner flotante*/}
-                        {toEliminate && <div className='modal'>
-                            <p>¿Está seguro que desea elminiar el elemento <b> {`${ediciones.find((el) => el.id == toEliminate).name}`}</b>?</p>
-                            <div>
-                                <button className='text-rose-500 [font-weight:bold]' onClick={handleEliminate}>ELIMINAR</button>
-                                <button className='text-green-500 [font-weight:bold]' onClick={handleBannerEliminate}>CANCELAR</button>
-                            </div>
-                        </div>}
-
-
-                    </>)
-                        : <>
-                            {/*Modo normal*/}
-                            <div className='flex'>
-                                {/* Desktop */}
-                                {/* <button className='flecha' onClick={handleScrollLeft}><img style={{ transform: "rotate(180deg)" }} src={`${process.env.NEXT_PUBLIC_URL}/images/flecha.webp`} /></button> */}
-
-                                {!ediciones[0] ?
-                                    <span className='loader mt-20'></span> :
-                                    <div ref={galleryRef} style={{ scrollBehavior: "smooth" }} className={viewerMode ? "galery galery-small" : "galery"}>
-
-                                        {ediciones[0] && ediciones.map((e, i) => {
-
-                                            return <div onClick={() => viewerMode && handleDetails({ id: e.id, h4: e.name })} className={e.visible ? viewerMode ? "galery-item-small-user" : 'galery-item ' : "hidden"} key={e.id}>
-
-                                                {e.image ? <img src={e.image} alt={e.name} /> : <div className="skeleton animate-pulse space-x-4 bg-red-300 h-[auto] aspect-square w-[70%] rounded"></div>}
-
-                                                <h4>{e.name}</h4>
-                                                <p >{e.description}</p>
-                                                <div className={!e.description && viewerMode ? "sinDescription flex items-center [padding:2px]" : "flex items-center [padding:2px]"} ><span>$</span><p className='[min-width:20px] font-bold rounded-md [margin-left:2px] [padding:2px]'>{e.price}</p></div>
-                                            </div>
-                                        })}
-
-                                    </div>
-                                }
-                                {/* Desktop */}
-                                {/* <button className='flecha' onClick={handleScrollRight}><img src={`${process.env.NEXT_PUBLIC_URL}/images/flecha.webp`} /></button> */}
-                            </div>
-
-
-                            {details && p && <div className='modalDetails'>
-                                {details.img ? <img src={details.img} /> : <div className="animate-pulse space-x-4 bg-red-300 h-[auto] aspect-square w-[70%] rounded"></div>}
-
-                                <h4>{details.h4}</h4>
-                                <p >{details.p}</p>
-                                <div className={"flex items-center "} ><span>$</span><p className='[min-width:20px] font-bold rounded-md [margin-left:2px] [padding:2px]'>{details.price}</p></div>
-                                <button onClick={() => router.push(`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${name2.replaceAll(" ", "-")}`)}>✖</button>
-                            </div>}
-                        </>
-                    }
-                </article >
-            </DndContext>
 
 
 
