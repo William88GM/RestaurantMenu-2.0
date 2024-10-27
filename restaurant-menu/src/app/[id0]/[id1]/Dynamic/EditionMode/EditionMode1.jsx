@@ -1,12 +1,16 @@
+import useEliminate from "@/Hooks/useEliminate";
 import ListItems1 from "./ListItems1"
 import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-export default function EditionMode1({ handleEliminate, dataEditableRef, setEdiciones, toEliminate, dragActive, logged, galleryRef, ediciones, imagesHaveChanged, handleVisionItem, handleBannerEliminate }) {
+export default function EditionMode1({ dataEditableRef, setEdiciones, dragActive, logged, galleryRef, ediciones, imagesHaveChanged, handleVisionItem, }) {
     const sensors = useSensors(
         useSensor(MouseSensor),
         useSensor(TouchSensor)
     );
+
+    const { handleBannerEliminate, toEliminate, handleEliminate } = useEliminate()
+
     function handleDragEnd(e) {
         imagesHaveChanged.current = true
 
@@ -28,7 +32,7 @@ export default function EditionMode1({ handleEliminate, dataEditableRef, setEdic
                 <div className='container' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
                     <SortableContext items={ediciones.map((e) => e.id)} strategy={verticalListSortingStrategy}>
                         {ediciones[0] && ediciones.map((e, i) => {
-                            return <ListItems1 imagesHaveChanged={imagesHaveChanged} handleVisionItem={handleVisionItem} handleBannerEliminate={handleBannerEliminate} key={e.id} i={i} ediciones={ediciones} setEdiciones={setEdiciones} logged={logged} e={e} dragActive={dragActive} toEliminate={toEliminate} />
+                            return <ListItems1 imagesHaveChanged={imagesHaveChanged} handleVisionItem={handleVisionItem} handleBannerEliminate={handleBannerEliminate} key={e.id} i={i} ediciones={ediciones} setEdiciones={setEdiciones} logged={logged} e={e} dragActive={dragActive} />
                         })}
                     </SortableContext>
                 </div>
@@ -36,7 +40,7 @@ export default function EditionMode1({ handleEliminate, dataEditableRef, setEdic
                 {toEliminate && <div className='modal'>
                     <p>¿Está seguro que desea elminiar la categoría <b> {`${ediciones.find((el) => el.id == toEliminate).name}`}</b> y todos sus hijos ?</p>
                     <div>
-                        <button className='text-rose-500 [font-weight:bold]' onClick={handleEliminate}>ELIMINAR</button>
+                        <button className='text-rose-500 [font-weight:bold]' onClick={() => setEdiciones(handleEliminate(dataEditableRef).current.options)}>ELIMINAR</button>
                         <button className='text-green-500 [font-weight:bold]' onClick={handleBannerEliminate}>CANCELAR</button>
                     </div>
                 </div>}

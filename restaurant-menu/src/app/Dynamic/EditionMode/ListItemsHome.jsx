@@ -1,8 +1,10 @@
+import useEliminate from '@/Hooks/useEliminate'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import React from 'react'
 
-export default function ListItemsHome({ imagesHaveChanged, handleVisionItem, handleBannerEliminate, e, dragActive, logged, toEliminate }) {
+export default function ListItemsHome({ handleBannerEliminate, handleVisionItem, e, dragActive, logged }) {
+
 
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: e.id })

@@ -2,16 +2,17 @@
 import { SessionContext } from '@/Context/SessionContext'
 // import * as generateExcel from '@/Hooks/generateExcel.cjs'
 import * as generateJson from '@/Hooks/generateJson.cjs'
+import useHandleMenu from '@/Hooks/handleMenu'
 
 import useData from '@/Hooks/useData'
 import useImagesInterface from '@/Hooks/useImagesInterface'
 import axios from 'axios'
-import dynamic from 'next/dynamic';
 import React, { useContext, useEffect, useState } from 'react'
 
 "use strict"
 
-export default function MenuLogged({ setShowPassword, showPassword, showMenu, handleMenu, setShowMenu }) {
+export default function MenuLogged({ setShowPassword, showPassword, showMenu, setShowMenu, handleMenu }) {
+
 
 
     const { logged, setLogged } = useContext(SessionContext)

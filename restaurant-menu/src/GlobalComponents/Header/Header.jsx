@@ -1,7 +1,7 @@
-import Link from "next/link"
-import { on } from "process"
 
-export default function Header({ navigateTo, isHome, handleMenu, logged, editionMode, showMenu }) {
+import Link from "next/link"
+
+export default function Header({ navigateTo, isHome, logged, editionMode, showMenu, handleMenu }) {
 
     const logoImg = `${process.env.NEXT_PUBLIC_URL}/images/Title.webp`
 
@@ -12,6 +12,8 @@ export default function Header({ navigateTo, isHome, handleMenu, logged, edition
             <Link prefetch={false} href={navigateTo}>
                 <img className='title' src={logoImg} alt="Título La Vene" />
             </Link>
+
+
             {isHome ?
                 <>
                     {!editionMode && showMenu ?

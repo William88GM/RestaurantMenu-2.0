@@ -5,9 +5,11 @@ export default function NormalModeHome({ baseURL, galleryRef, cardRef, ediciones
         <>
             <div className='containerSucursales' style={{ scrollBehavior: "smooth" }} ref={galleryRef}>
                 { /*Modo normal*/}
-                {ediciones[0] && ediciones.map((e, i) => {
-                    return <ListItemsHome e={e} key={e.id} cardRef={cardRef} />
-                })}
+                {!ediciones[0] ?
+                    <span className='loader mt-20 m-auto'></span> :
+                    ediciones.map((e, i) => {
+                        return <ListItemsHome e={e} key={e.id} cardRef={cardRef} />
+                    })}
             </div>
         </>
     )

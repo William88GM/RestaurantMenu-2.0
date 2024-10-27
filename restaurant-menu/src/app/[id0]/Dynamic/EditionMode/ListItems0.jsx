@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import React from 'react'
 
-export default function ListItems0({ imagesHaveChanged, handleVisionItem, handleBannerEliminate, e, dragActive, logged, toEliminate }) {
+export default function ListItems0({ handleVisionItem, handleBannerEliminate, e, dragActive, logged, toEliminate }) {
 
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: e.id })

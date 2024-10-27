@@ -1,12 +1,8 @@
 "use client"
 import useData from '@/Hooks/useData'
 import Link from 'next/link'
-import { useParams, usePathname } from 'next/navigation'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import GalleryItem from './EditionMode/ListItems2'
-import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from '@dnd-kit/core'
-import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SessionContext } from '@/Context/SessionContext'
 import useAutoLogin from '@/Hooks/useAutoLogin'
 import loadFromLocalStorage from '@/Hooks/getCache'
@@ -17,24 +13,26 @@ import MenuLogin from '@/GlobalComponents/Menu/MenuLogin'
 import Header from '@/GlobalComponents/Header/Header'
 import Section from '@/GlobalComponents/Section/Section'
 
-import ListItem from '../../Dynamic/EditionMode/ListItems1'
-import ListItems2 from './EditionMode/ListItems2'
 import EditionMode2 from './EditionMode/EditionMode2'
 import NormalMode2 from './NormalMode/NormalMode2'
 import Article from '@/GlobalComponents/Article/Article'
+import useHandleMenu from '@/Hooks/handleMenu'
+import handleVision from '@/Hooks/handleVision'
+import handlePostear from '@/Hooks/handlePostear'
+import handleEditionMode from '@/Hooks/handleEditionMode'
+import handleVerificarRepetidos from '@/Hooks/handleVerificarRepetidos'
+import useAutoScroll from '@/Hooks/useAutoScroll'
 
 export const runtime = 'edge';
 
 
 export default function Dynamic2({ params }) {
-    // const name = decodeURIComponent(params.id0)
-    // const name1 = decodeURIComponent(params.id1)
-    // const name2 = decodeURIComponent(params.id2) //pagina actual
+
     const name = decodeURIComponent(params.id0.replaceAll("-", " "))
     const name1 = decodeURIComponent(params.id1.replaceAll("-", " "))
     const name2 = decodeURIComponent(params.id2.replaceAll("-", " "))
 
-    const pathname = usePathname()
+
     const router = useRouter()
     const querys = useSearchParams()
     const p = querys.get("p")
@@ -50,11 +48,8 @@ export default function Dynamic2({ params }) {
     const dataAllRef2 = useRef(null) //json completo donde se guardara el json parcial y luego se enviara al backend, ademas de usarlo para actualizar el estado data
     const [loading, setLoading] = useState(false)
     const [dragActive, setDragActive] = useState(false)
-    const sensors = useSensors(
-        useSensor(MouseSensor),
-        useSensor(TouchSensor)
-    );
-    const [showMenu, setShowMenu] = useState(false)
+
+
     const galleryRef = useRef(null)
     const guardando = useRef(null)
     const longitudItemsPrevios = useRef(null)
@@ -64,21 +59,14 @@ export default function Dynamic2({ params }) {
     const [toEliminate, setToEliminate] = useState(null)//Se guarda el indice del que se quiere eliminar y muestra el banner
 
 
-
+    const [showMenu, setShowMenu, handleMenu] = useHandleMenu()
 
 
     useEffect(() => {
         if (guardando.current) return
-
-        // if (data && data.options) {
-        //     // dataAllRef2.current = structuredClone(data)
-        //     dataAllRef2.current = structuredClone(data)
-        //     //linea a editar en cada archivo + la del save
-        //     dataEditableRef2.current = structuredClone(data?.options.find((e) => e.name === name)?.options.find((e) => e.name === name1)?.options.find((e) => e.name === name2)) //copia el objeto de la categoria de la pagina actual
-
         if (data && data.options) {
-            let targetItem;
 
+            let targetItem;
             for (const category of data.options) {
                 if (category.name === name) {
                     for (const subcategory of category.options) {
@@ -96,29 +84,21 @@ export default function Dynamic2({ params }) {
                 }
             }
 
+            // Clonar los datos y la subcategoría encontrada
             if (targetItem) {
                 dataAllRef2.current = structuredClone(data);
                 dataEditableRef2.current = structuredClone(targetItem); // Copia el objeto de la categoría actual
             }
 
-
-
-
-
+            //Navegar a la categoria previa a la actual
             if (!dataEditableRef2.current || dataEditableRef2.current.visible == false) {
                 return window.location.replace(`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}`)
             }
 
-
-
-
+            //COMIENZA CARGA DE IMAGENES
             const key = dataEditableRef2.current.id
-
             const time = 5 //en minutos
             let { exists, isUpToDate, item } = loadFromLocalStorage(key)
-
-
-
             if (dataEditableRef2.current) {
                 if (!isUpToDate) {
                     if (!logged) {//Si esta logged que no se muestre nada hasta que hayann cargado hasta las imagenes, no solo el texto, asi al guardar las imagenes no hay riesgo de que se guarde la imagen del loading
@@ -158,7 +138,7 @@ export default function Dynamic2({ params }) {
 
                 }
             }
-
+            //FIN CARGA DE IMAGENES
 
 
             longitudItemsPrevios.current = dataEditableRef2.current.options.length//Evitar scroll la primera vez
@@ -172,26 +152,6 @@ export default function Dynamic2({ params }) {
 
 
 
-
-    function handleBannerEliminate(e) {
-        if (toEliminate === null) {
-
-            setToEliminate(e.target.id)//5
-        } else {
-            setToEliminate(null)
-        }
-    }
-
-
-    function handleEliminate() {
-
-        dataEditableRef2.current.options = dataEditableRef2.current.options.filter((e) => e.id !== toEliminate)
-
-
-        setToEliminate(null)
-
-        setEdiciones(dataEditableRef2.current.options)
-    }
 
 
     function handleAddCategory() {
@@ -210,44 +170,9 @@ export default function Dynamic2({ params }) {
 
     }
 
-    useEffect(() => {
-        if (!scroll.current) return
-        scroll.current = false
-        // console.log("Estado del eliminate", toEliminate);
-        if (longitudItemsPrevios.current == ediciones.length) {//para evitar el scroll la primera vez
-            return
-        }
-
-        if (galleryRef.current && galleryRef.current && ediciones) { //30 de gap
-            galleryRef.current.scrollTop += (galleryRef.current.offsetHeight + 400) * ediciones.length;
-
-        }
+    useAutoScroll(scroll, galleryRef, ediciones, longitudItemsPrevios)
 
 
-    }, [ediciones.length])
-
-
-    function handleMenu() {
-        setShowMenu(!showMenu)
-        // console.log("hola");
-    }
-    function verificarRepetidos(state) {
-        // const seen = new Set();
-        // const duplicates = state.filter(item => {
-        //     if (seen.has(item.name)) {
-        //         return true;
-        //     }
-        //     seen.add(item.name);
-        //     return false;
-        // });
-
-        // if (duplicates.length > 0) {
-        //     return true
-        // } else {
-        //     false
-        // }
-        return false
-    }
 
     function verificarSoloNumericos(array) {
 
@@ -262,16 +187,7 @@ export default function Dynamic2({ params }) {
         return false
     }
 
-    function handleEditionMode() {
-        if (loading) return
-        if (editionMode) {
 
-            handleSave()
-        } else {
-
-            setEditionMode(true)
-        }
-    }
 
 
 
@@ -313,7 +229,7 @@ export default function Dynamic2({ params }) {
             if (verificarSoloNumericos(datos)) {
                 alert("Solo pueden haber numeros en el precio, use punto para las decimales si las necesita.")
                 return setEditionMode(true)
-            } else if (verificarRepetidos(datos)) {
+            } else if (handleVerificarRepetidos(false)) {
                 alert("No pueden haber titulos repetidos")
                 return setEditionMode(true)
             } else {
@@ -365,7 +281,8 @@ export default function Dynamic2({ params }) {
                 //guarda en data el json actualizado de la ref
                 setData(dataAllRef2.current)
                 //envia el json
-                postear(images)
+                // postear(images)
+                handlePostear(images, setLoading, guardando, imagesHaveChanged, dataAllRef2)
 
             }
         } catch (error) {
@@ -375,51 +292,11 @@ export default function Dynamic2({ params }) {
     }
 
 
-    function postear(images) {
-        setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/modify`, {
-            method: "PUT",
-            body: JSON.stringify({ dataAll: dataAllRef2.current, images: images, imagesHaveChanged: imagesHaveChanged.current }), // data can be `string` or {object}!
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }).then(
-            (res) => res.json(),
-        ).then(
-            (res) => {
-                setLoading(false)
-                guardando.current = false
-                imagesHaveChanged.current = false
-                localStorage.clear();
-            }
-        ).catch((err) => {
-            console.log(err);
-            guardando.current = false
-            localStorage.clear();
-        })
-    }
 
 
 
 
 
-
-    function handleDragEnd(e) {
-        imagesHaveChanged.current = true
-
-        // console.log("Ediciones en el medio", ediciones);
-        // saveBefore()
-
-        const { active, over } = e
-        const oldIndex = ediciones.findIndex((item) => item.id === active.id)
-        const newIndex = ediciones.findIndex((item) => item.id === over.id)
-
-        const newOrder = arrayMove(ediciones, oldIndex, newIndex)
-
-        setEdiciones(newOrder)
-        dataEditableRef2.current.options = newOrder
-        // console.log("despues", dataEditableRef2.current.options);
-    }
 
 
     //🧐
@@ -458,30 +335,11 @@ export default function Dynamic2({ params }) {
     const [details, setDetails] = useState({ img: "", h4: "", p: "", price: "" })
 
 
-    function propagar(targets, cambio) {
-        // console.log("TARGETS: ", targets);
-        targets.forEach((el) => {
-            // console.log("ELEMENTO: ", el);
-            el.visible = cambio
-            if (el.options && el.options[0]) {
-                propagar(el.options, cambio)
-            }
-        })
-    }
-
-
     function handleVisionItem(id) {
-        let cambio = !dataEditableRef2.current.options.find((el) => el.id == id).visible
-        dataEditableRef2.current.options.find((el) => el.id == id).visible = !dataEditableRef2.current.options.find((el) => el.id == id).visible
-        // dataEditableRef2.current.options.find((el) => el.id == id).visible = true
-
-        let childs = dataEditableRef2.current.options.find((el) => el.id == id).options
-        if (childs && childs[0]) {
-            // console.log("cambio:", cambio);
-            propagar(childs, cambio)
-        }
-        setEdiciones([...dataEditableRef2.current.options])
+        const res = handleVision(id, dataEditableRef2)
+        setEdiciones(res)
     }
+
 
 
 
@@ -514,14 +372,14 @@ export default function Dynamic2({ params }) {
 
             <Section navigateTo={`/${params.id0}/${params.id1}`} previousPage={name1} actualPage={name2} editionMode={editionMode} viewerMode={viewerMode} handleChangeView={handleChangeView} />
 
-            <Article handleEliminate={handleEliminate} dataEditableRef={dataEditableRef2} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} logged={logged} data={data} ediciones={ediciones} p={p} handleDetails={handleDetails} setEdiciones={setEdiciones} viewerMode={viewerMode} EditionMode={EditionMode2} NormalMode={NormalMode2} details={details} editionModeState={editionMode} viewerModeState={viewerMode} galleryRef={galleryRef} baseURL={`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${name2.replaceAll(" ", "-")}`} />
+            <Article handleVisionItem={handleVisionItem} dataEditableRef={dataEditableRef2} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} logged={logged} data={data} ediciones={ediciones} p={p} handleDetails={handleDetails} setEdiciones={setEdiciones} viewerMode={viewerMode} EditionMode={EditionMode2} NormalMode={NormalMode2} details={details} editionModeState={editionMode} viewerModeState={viewerMode} galleryRef={galleryRef} baseURL={`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${name2.replaceAll(" ", "-")}`} />
 
 
 
 
             <footer>
                 {logged ? loading ? <span className='[font-size:18px] font-bold mr-4'> Guardando</span> :
-                    <button className={editionMode ? "editionMode" : "viewerMode"} onClick={handleEditionMode}> {editionMode ?
+                    <button className={editionMode ? "editionMode" : "viewerMode"} onClick={() => handleEditionMode(loading, editionMode, setEditionMode, handleSave)}> {editionMode ?
                         <svg fill='#00dd60' version="1.0" xmlns="http://www.w3.org/2000/svg"
                             width="100%" height="100%" viewBox="0 0 512.000000 512.000000"
                             preserveAspectRatio="xMidYMid meet">
@@ -572,8 +430,8 @@ export default function Dynamic2({ params }) {
                 }
             </footer>
             {!editionMode && showMenu ? logged ?
-                <MenuLogged setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} />
-                : <MenuLogin setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} /> : ""}
+                <MenuLogged setShowMenu={setShowMenu} showMenu={showMenu} handleMenu={handleMenu} setShowPassword={setShowPassword} showPassword={showPassword} />
+                : <MenuLogin setShowMenu={setShowMenu} showMenu={showMenu} handleMenu={handleMenu} setShowPassword={setShowPassword} showPassword={showPassword} /> : ""}
 
         </main>
     );

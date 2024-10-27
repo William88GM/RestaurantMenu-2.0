@@ -12,6 +12,13 @@ import Header from "@/GlobalComponents/Header/Header";
 import EditionModeHome from "./EditionMode/EditionModeHome";
 import NormalModeHome from "./NormalMode/NormalModeHome";
 import Article from "@/GlobalComponents/Article/Article";
+import useHandleMenu from "@/Hooks/handleMenu";
+import useHandleBannerEliminate from "@/Hooks/useEliminate";
+import handleVision from "@/Hooks/handleVision";
+import handlePostear from "@/Hooks/handlePostear";
+import handleEditionMode from "@/Hooks/handleEditionMode";
+import handleVerificarRepetidos from "@/Hooks/handleVerificarRepetidos";
+import useAutoScroll from "@/Hooks/useAutoScroll";
 
 export const runtime = 'edge';
 export default function DynamicHome() {
@@ -20,7 +27,6 @@ export default function DynamicHome() {
     const { logged } = useContext(SessionContext)
 
     const imagesHaveChanged = useRef(false)
-
 
 
 
@@ -46,47 +52,36 @@ export default function DynamicHome() {
     const scroll = useRef(false)
 
     const [editionMode, setEditionMode] = useState(false)
-    const [toEliminate, setToEliminate] = useState(null)
-    const [showMenu, setShowMenu] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+
+    const { toEliminate, setToEliminate } = useHandleBannerEliminate()
+    const [showMenu, setShowMenu, handleMenu] = useHandleMenu()
+
+
 
 
     useEffect(() => {
         if (guardando.current) return
         if (data && data.options) {
-            dataAllRef.current = structuredClone(data)
 
+            // La busqueda de la seccion segun la url iría aqui
+
+            // Clonar los datos
+            dataAllRef.current = structuredClone(data)
             dataEditableRef.current = structuredClone(data)
 
-            //fetch de img si la seccion las necesita
-            longitudItemsPrevios.current = dataEditableRef.current.options.length //Evitar scroll la primera vez
+            //COMIENZA CARGA DE IMAGENES
+            //Ver cacheadas en localstorage
             setEdiciones(dataEditableRef.current.options)
+            //fetch de img si la seccion las necesita
+            //FIN CARGA DE IMAGENES
+
+            longitudItemsPrevios.current = dataEditableRef.current.options.length //Evitar scroll la primera vez
         }
     }, [data])
 
 
 
-
-    function handleBannerEliminate(e) {
-        if (toEliminate === null) {
-
-            setToEliminate(e.target.id)//5
-        } else {
-            setToEliminate(null)
-        }
-    }
-
-
-
-
-    function handleEliminate() {
-        dataEditableRef.current.options = dataEditableRef.current.options.filter((e) => e.id !== toEliminate)
-
-
-        setToEliminate(null)
-
-        setEdiciones(dataEditableRef.current.options)
-    }
 
 
     function handleAddCategory() {
@@ -132,52 +127,10 @@ export default function DynamicHome() {
 
     }
 
-    useEffect(() => {
-        if (!scroll.current) return
-        scroll.current = false
-        if (longitudItemsPrevios.current == ediciones.length) {
-            return
-        }
-
-        if (galleryRef.current && galleryRef.current && ediciones) { //30 de gap
-            galleryRef.current.scrollTop += (galleryRef.current.offsetHeight + 400) * ediciones.length;
-
-        }
 
 
-    }, [ediciones.length])
+    useAutoScroll(scroll, galleryRef, ediciones, longitudItemsPrevios)
 
-    function verificarRepetidos(state) {
-        const seen = new Set();
-        const duplicates = state.filter(item => {
-            if (seen.has(item.name)) {
-                return true;
-            }
-            seen.add(item.name);
-            return false;
-        });
-
-        if (duplicates.length > 0) {
-            return true
-        } else {
-            false
-        }
-
-        return false
-    }
-
-
-    async function handleEditionMode() {
-        if (loading) return
-        if (editionMode) {
-
-            handleSave()
-        } else {
-
-
-            setEditionMode(true)
-        }
-    }
 
 
     async function handleSave() {
@@ -203,7 +156,7 @@ export default function DynamicHome() {
                 console.error("No se encontró el elemento con la clase .containerSucursales");
             }
 
-            if (verificarRepetidos(datos)) {
+            if (handleVerificarRepetidos(datos)) {
                 alert("No pueden haber titulos repetidos")
                 return setEditionMode(true)
             } else {
@@ -244,8 +197,11 @@ export default function DynamicHome() {
 
                 //guarda en data el json actualizado de la ref
                 setData(dataAllRef.current)
+
                 //envia el json
-                postear(images)
+                // postear(images)
+                // postear({})
+                handlePostear({}, setLoading, guardando, imagesHaveChanged, dataAllRef)
             }
         } catch (error) {
             console.log(error);
@@ -253,79 +209,11 @@ export default function DynamicHome() {
     }
 
 
-    function postear(images) {
-        setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/modify`, {
-            method: "PUT",
-            body: JSON.stringify({ dataAll: dataAllRef.current, images: {}, imagesHaveChanged: imagesHaveChanged.current }), // data can be `string` or {object}!
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }).then(
-            (res) => res.json(),
-        ).then(
-            (res) => {
-                setLoading(false)
-                guardando.current = false
-                localStorage.clear();
-            }
-        ).catch((err) => {
-            console.log(err);
-            guardando.current = false
-            imagesHaveChanged.current = false
-            localStorage.clear();
-        })
-    }
 
-
-
-
-
-
-
-
-    //🧐
-    // useEffect(() => {
-    //   console.log("Pagina inicio");
-    // }, [])
-
-
-
-
-    // useEffect(() => {
-    //   if (ediciones) console.log("ediciones", ediciones);
-    // }, [ediciones])
-
-
-
-    function handleMenu() {
-        setShowMenu(!showMenu)
-        // console.log("hola");
-    }
-
-    function propagar(targets, cambio) {
-        // console.log("TARGETS: ", targets);
-        targets.forEach((el) => {
-            // console.log("ELEMENTO: ", el);
-            el.visible = cambio
-            if (el.options && el.options[0]) {
-                propagar(el.options, cambio)
-            }
-        })
-    }
 
     function handleVisionItem(id) {
-        // console.log("ESTADO ACTUAL: ", dataEditableRef.current.options.find((el) => el.id == id).visible);
-        let cambio = !dataEditableRef.current.options.find((el) => el.id == id).visible
-        dataEditableRef.current.options.find((el) => el.id == id).visible = !dataEditableRef.current.options.find((el) => el.id == id).visible
-        // dataEditableRef.current.options.find((el) => el.id == id).visible = true
-
-
-        if (dataEditableRef.current.options.find((el) => el.id == id).options[0]) {
-            // console.log("cambio:", cambio);
-            propagar(dataEditableRef.current.options.find((el) => el.id == id).options, cambio)
-        }
-        setEdiciones([...dataEditableRef.current.options])
+        const res = handleVision(id, dataEditableRef)
+        setEdiciones(res)
     }
 
 
@@ -334,7 +222,7 @@ export default function DynamicHome() {
 
     return (<main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
 
-        <Header navigateTo={`/`} isHome={true} handleMenu={handleMenu} logged={logged} editionMode={editionMode} showMenu={showMenu} />
+        <Header handleMenu={handleMenu} showMenu={showMenu} navigateTo={`/`} isHome={true} logged={logged} editionMode={editionMode} />
 
         {/* <Section navigateTo={`/`} previousPage={"Home"} actualPage={"Home"} editionMode={editionMode} viewerMode={null} handleChangeView={null} /> */}
 
@@ -342,13 +230,13 @@ export default function DynamicHome() {
             <h1 className="mx-8 text-center font-bold border-b-2 border-b-black">Bienvenido a La Vene San Juan</h1>
         </section>
 
-        <Article handleEliminate={handleEliminate} dragActive={dragActive} toEliminate={toEliminate} imagesHaveChanged={imagesHaveChanged} logged={logged} handleBannerEliminate={handleBannerEliminate} handleVisionItem={handleVisionItem} EditionMode={EditionModeHome} NormalMode={NormalModeHome} baseURL={`/`} editionModeState={editionMode} data={data} ediciones={ediciones} setEdiciones={setEdiciones} dataEditableRef={dataEditableRef} galleryRef={galleryRef} cardRef={cardRef} />
+        <Article dragActive={dragActive} imagesHaveChanged={imagesHaveChanged} logged={logged} handleVisionItem={handleVisionItem} EditionMode={EditionModeHome} NormalMode={NormalModeHome} baseURL={`/`} editionModeState={editionMode} data={data} ediciones={ediciones} setEdiciones={setEdiciones} dataEditableRef={dataEditableRef} galleryRef={galleryRef} cardRef={cardRef} />
 
 
 
         <footer>
             {logged ? loading ? <span className='[font-size:18px] font-bold mr-4'> Guardando</span> :
-                <button className={editionMode ? "editionMode" : "viewerMode"} onClick={handleEditionMode}> {editionMode ?
+                <button className={editionMode ? "editionMode" : "viewerMode"} onClick={() => handleEditionMode(loading, editionMode, setEditionMode, handleSave)}> {editionMode ?
                     <svg fill='#00dd60' version="1.0" xmlns="http://www.w3.org/2000/svg"
                         width="100%" height="100%" viewBox="0 0 512.000000 512.000000"
                         preserveAspectRatio="xMidYMid meet">
@@ -396,8 +284,8 @@ export default function DynamicHome() {
         </footer>
 
         {!editionMode && showMenu ? logged ?
-            <MenuLogged setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} />
-            : <MenuLogin setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} /> : ""}
+            <MenuLogged setShowMenu={setShowMenu} showMenu={showMenu} handleMenu={handleMenu} setShowPassword={setShowPassword} showPassword={showPassword} />
+            : <MenuLogin setShowMenu={setShowMenu} showMenu={showMenu} handleMenu={handleMenu} setShowPassword={setShowPassword} showPassword={showPassword} /> : ""}
     </main>
     );
 }

@@ -1,12 +1,16 @@
+import useEliminate from "@/Hooks/useEliminate";
 import ListItems2 from "./ListItems2"
 import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-export default function EditionMode2({ handleEliminate, data, viewerMode, dataEditableRef, setEdiciones, toEliminate, dragActive, logged, galleryRef, ediciones, imagesHaveChanged, handleVisionItem, handleBannerEliminate }) {
+export default function EditionMode2({ data, viewerMode, dataEditableRef, setEdiciones, dragActive, logged, galleryRef, ediciones, imagesHaveChanged, handleVisionItem }) {
     const sensors = useSensors(
         useSensor(MouseSensor),
         useSensor(TouchSensor)
     );
+
+    const { handleBannerEliminate, toEliminate, handleEliminate } = useEliminate()
+
     function handleDragEnd(e) {
         imagesHaveChanged.current = true
 
@@ -41,7 +45,7 @@ export default function EditionMode2({ handleEliminate, data, viewerMode, dataEd
                 {toEliminate && <div className='modal'>
                     <p>¿Está seguro que desea elminiar el elemento <b> {`${ediciones.find((el) => el.id == toEliminate).name}`}</b>?</p>
                     <div>
-                        <button className='text-rose-500 [font-weight:bold]' onClick={handleEliminate}>ELIMINAR</button>
+                        <button className='text-rose-500 [font-weight:bold]' onClick={() => setEdiciones(handleEliminate(dataEditableRef).current.options)}>ELIMINAR</button>
                         <button className='text-green-500 [font-weight:bold]' onClick={handleBannerEliminate}>CANCELAR</button>
                     </div>
                 </div>}

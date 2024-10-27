@@ -1,12 +1,9 @@
 "use client"
 import useData from '@/Hooks/useData'
-import { closestCenter, DndContext, useSensor, useSensors, MouseSensor, TouchSensor } from '@dnd-kit/core'
-import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import ListItem from './EditionMode/ListItems0'
 import { SessionContext } from '@/Context/SessionContext'
 import useAutoLogin from '@/Hooks/useAutoLogin'
 import useImagesInterface from '@/Hooks/useImagesInterface'
@@ -17,6 +14,12 @@ import EditionMode0 from './EditionMode/EditionMode0'
 import NormalMode0 from './NormalMode/NormalMode0'
 import Section from '@/GlobalComponents/Section/Section'
 import Article from '@/GlobalComponents/Article/Article'
+import useHandleMenu from '@/Hooks/handleMenu'
+import handleVision from '@/Hooks/handleVision'
+import handlePostear from '@/Hooks/handlePostear'
+import handleEditionMode from '@/Hooks/handleEditionMode'
+import handleVerificarRepetidos from '@/Hooks/handleVerificarRepetidos'
+import useAutoScroll from '@/Hooks/useAutoScroll'
 
 
 export const runtime = 'edge';
@@ -30,7 +33,6 @@ export default function Dynamic0({ params }) {
     const { logged, setLogged } = useContext(SessionContext)
     useAutoLogin()
     const imagesHaveChanged = useRef(false)
-    const [showMenu, setShowMenu] = useState(false)
     const { data, setData } = useData() //json completo en estado
     const dataEditableRef0 = useRef(null);//tendra solo una parte del json con el que se trabajara en esta pagina
     const [ediciones, setEdiciones] = useState([]) //[{name: ""},{},{},] solo titulos de los inputs editables, se asignaran al json parcial
@@ -38,10 +40,7 @@ export default function Dynamic0({ params }) {
     const [loading, setLoading] = useState(false)
     const [dragActive, setDragActive] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
-    const sensors = useSensors(
-        useSensor(MouseSensor),
-        useSensor(TouchSensor)
-    );
+
     const galleryRef = useRef(null)
     const cardRef = useRef(null)
     const longitudItemsPrevios = useRef(null)
@@ -49,7 +48,7 @@ export default function Dynamic0({ params }) {
     const { imagesInterface } = useImagesInterface()
     const [editionMode, setEditionMode] = useState(false)//modo edicion
     const [toEliminate, setToEliminate] = useState(null)//Se guarda el indice del que se quiere eliminar y muestra el banner
-
+    const [showMenu, setShowMenu, handleMenu] = useHandleMenu()
     const scroll = useRef(false)
 
     useEffect(() => {
@@ -71,17 +70,18 @@ export default function Dynamic0({ params }) {
                 dataEditableRef0.current = structuredClone(targetCategory); // Copia el objeto de la categoría actual
             }
 
-
-
-
-
-
+            //Navegar a la categoria previa a la actual
             if (!dataEditableRef0.current || dataEditableRef0.current.visible == false) {
                 return window.location.replace(`/`)
             }
-            //fetch de img si la seccion las necesita
-            longitudItemsPrevios.current = dataEditableRef0.current.options.length //Evitar scroll la primera vez
+
+            //COMIENZA CARGA DE IMAGENES
+            //Ver cacheadas en localstorage
             setEdiciones(dataEditableRef0.current.options)
+            //fetch de img si la seccion las necesita
+            //FIN CARGA DE IMAGENES
+
+            longitudItemsPrevios.current = dataEditableRef0.current.options.length //Evitar scroll la primera vez
         }
     }, [data])
 
@@ -90,24 +90,6 @@ export default function Dynamic0({ params }) {
 
 
 
-    function handleBannerEliminate(e) {
-        if (toEliminate === null) {
-
-            setToEliminate(e.target.id)//5
-        } else {
-            setToEliminate(null)
-        }
-    }
-
-
-    function handleEliminate() {
-        dataEditableRef0.current.options = dataEditableRef0.current.options.filter((e) => e.id !== toEliminate)
-
-
-        setToEliminate(null)
-
-        setEdiciones(dataEditableRef0.current.options)
-    }
 
 
 
@@ -146,55 +128,10 @@ export default function Dynamic0({ params }) {
 
     }
 
-    useEffect(() => {
-
-        if (!scroll.current) return
-        scroll.current = false
-        if (longitudItemsPrevios.current == ediciones.length) {
-            return
-        }
-
-        if (galleryRef.current && galleryRef.current && ediciones) { //30 de gap
-            galleryRef.current.scrollTop += (galleryRef.current.offsetHeight + 400) * ediciones.length;
-
-        }
+    useAutoScroll(scroll, galleryRef, ediciones, longitudItemsPrevios)
 
 
-    }, [ediciones.length])
 
-    function verificarRepetidos(state) {
-        const seen = new Set();
-        const duplicates = state.filter(item => {
-            if (seen.has(item.name)) {
-                return true;
-            }
-            seen.add(item.name);
-            return false;
-        });
-
-        if (duplicates.length > 0) {
-            return true
-        } else {
-            false
-        }
-
-        return false
-    }
-    function handleMenu() {
-        setShowMenu(!showMenu)
-        // console.log("hola");
-    }
-
-    function handleEditionMode() {
-        if (loading) return
-        if (editionMode) {
-
-            handleSave()
-        } else {
-
-            setEditionMode(true)
-        }
-    }
 
     async function handleSave() {
         guardando.current = true
@@ -219,7 +156,7 @@ export default function Dynamic0({ params }) {
                 console.error("No se encontró el elemento con la clase .containerInicio");
             }
 
-            if (verificarRepetidos(datos)) {
+            if (handleVerificarRepetidos(datos)) {
                 alert("No pueden haber titulos repetidos")
                 return setEditionMode(true)
             } else {
@@ -259,7 +196,8 @@ export default function Dynamic0({ params }) {
                 //guarda en data el json actualizado de la ref
                 setData(dataAllRef0.current)
                 //envia el json
-                postear(images)
+                // postear(images)
+                handlePostear(images, setLoading, guardando, imagesHaveChanged, dataAllRef0)
             }
         } catch (error) {
             console.log(error);
@@ -267,84 +205,17 @@ export default function Dynamic0({ params }) {
     }
 
 
-    function postear(images) {
-        setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/modify`, {
-            method: "PUT",
-            body: JSON.stringify({ dataAll: dataAllRef0.current, images: {}, imagesHaveChanged: imagesHaveChanged.current }), // data can be `string` or {object}!
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }).then(
-            (res) => res.json(),
-        ).then(
-            (res) => {
-                setLoading(false)
-                guardando.current = false
-                imagesHaveChanged.current = false
-                localStorage.clear();
-            }
-        ).catch((err) => {
-            console.log(err);
-            guardando.current = false
-            localStorage.clear();
-        })
-    }
-
-
-    function handleDragEnd(e) {
-        imagesHaveChanged.current = true
-        // saveBefore()
-
-        const { active, over } = e
-        const oldIndex = ediciones.findIndex((item) => item.id === active.id)
-        const newIndex = ediciones.findIndex((item) => item.id === over.id)
-
-        const newOrder = arrayMove(ediciones, oldIndex, newIndex)
-
-        setEdiciones(newOrder)
-        dataEditableRef0.current.options = newOrder
-
-    }
-
-
-
-    //🧐
-    // useEffect(() => {
-    //     console.log("Pagina 0");
-    // }, [])
 
 
 
 
-    // useEffect(() => {
-    //     if (ediciones) console.log("ediciones", ediciones);
-    // }, [ediciones])
-
-    function propagar(targets, cambio) {
-        // console.log("TARGETS: ", targets);
-        targets.forEach((el) => {
-            // console.log("ELEMENTO: ", el);
-            el.visible = cambio
-            if (el.options && el.options[0]) {
-                propagar(el.options, cambio)
-            }
-        })
-    }
 
 
     function handleVisionItem(id) {
-        let cambio = !dataEditableRef0.current.options.find((el) => el.id == id).visible
-        dataEditableRef0.current.options.find((el) => el.id == id).visible = !dataEditableRef0.current.options.find((el) => el.id == id).visible
-        // dataEditableRef0.current.options.find((el) => el.id == id).visible = true
-
-        if (dataEditableRef0.current.options.find((el) => el.id == id).options[0]) {
-            // console.log("cambio:", cambio);
-            propagar(dataEditableRef0.current.options.find((el) => el.id == id).options, cambio)
-        }
-        setEdiciones([...dataEditableRef0.current.options])
-
+        const res = handleVision(id, dataEditableRef0)
+        setEdiciones(res)
     }
+
 
 
 
@@ -358,12 +229,12 @@ export default function Dynamic0({ params }) {
             <h2>{name} - INICIO</h2>
         </section> */}
 
-        <Article handleEliminate={handleEliminate} dataEditableRef={dataEditableRef0} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} EditionMode={EditionMode0} NormalMode={NormalMode0} baseURL={`${name.replaceAll(" ", "-")}`} editionModeState={editionMode} logged={logged} data={data} ediciones={ediciones} setEdiciones={setEdiciones} galleryRef={galleryRef} />
+        <Article handleVisionItem={handleVisionItem} dataEditableRef={dataEditableRef0} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} EditionMode={EditionMode0} NormalMode={NormalMode0} baseURL={`${name.replaceAll(" ", "-")}`} editionModeState={editionMode} logged={logged} data={data} ediciones={ediciones} setEdiciones={setEdiciones} galleryRef={galleryRef} />
 
 
         <footer>
             {logged ? loading ? <span className='[font-size:18px] font-bold mr-4'> Guardando</span> :
-                <button className={editionMode ? "editionMode" : "viewerMode"} onClick={handleEditionMode}> {editionMode ?
+                <button className={editionMode ? "editionMode" : "viewerMode"} onClick={() => handleEditionMode(loading, editionMode, setEditionMode, handleSave)}> {editionMode ?
                     <svg fill='#00dd60' version="1.0" xmlns="http://www.w3.org/2000/svg"
                         width="100%" height="100%" viewBox="0 0 512.000000 512.000000"
                         preserveAspectRatio="xMidYMid meet">
@@ -418,8 +289,8 @@ export default function Dynamic0({ params }) {
             }
         </footer>
         {!editionMode && showMenu ? logged ?
-            <MenuLogged setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} />
-            : <MenuLogin setShowPassword={setShowPassword} showPassword={showPassword} showMenu={showMenu} setShowMenu={setShowMenu} handleMenu={handleMenu} /> : ""}
+            <MenuLogged setShowMenu={setShowMenu} showMenu={showMenu} handleMenu={handleMenu} setShowPassword={setShowPassword} showPassword={showPassword} />
+            : <MenuLogin setShowMenu={setShowMenu} showMenu={showMenu} handleMenu={handleMenu} setShowPassword={setShowPassword} showPassword={showPassword} /> : ""}
 
     </main>
     );
