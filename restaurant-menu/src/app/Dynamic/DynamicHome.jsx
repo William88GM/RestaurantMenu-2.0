@@ -25,37 +25,29 @@ export default function DynamicHome() {
 
     useAutoLogin()
     const { logged } = useContext(SessionContext)
+    const { data, setData } = useData() //json completo en estado
+    const { toEliminate, setToEliminate } = useHandleBannerEliminate()
+    const [showMenu, setShowMenu, handleMenu] = useHandleMenu()
+    const { imagesInterface } = useImagesInterface()
+    useAutoScroll(scroll, galleryRef, ediciones, longitudItemsPrevios)
+
 
     const imagesHaveChanged = useRef(false)
-
-
-
-
-
-
-
-
-    const { data, setData } = useData() //json completo en estado
     const dataEditableRef = useRef(null);//tendra solo una parte del json con el que se trabajara en esta pagina
-    const [ediciones, setEdiciones] = useState([]) //[{ name: e.name, id: e.id },{},{},] solo titulos de los inputs editables, se asignaran al json parcial
     const dataAllRef = useRef(null) //json completo donde se guardara el json parcial y luego se enviara al backend, ademas de usarlo para actualizar el estado data
-    const [loading, setLoading] = useState(false)
-    const [dragActive, setDragActive] = useState(false)
-
-    const { imagesInterface } = useImagesInterface()
-
-
     const guardando = useRef(null)
     const galleryRef = useRef(null)
     const cardRef = useRef(null)
     const longitudItemsPrevios = useRef(null)
     const scroll = useRef(false)
 
+
+    const [ediciones, setEdiciones] = useState([]) //[{ name: e.name, id: e.id },{},{},] solo titulos de los inputs editables, se asignaran al json parcial
+    const [loading, setLoading] = useState(false)
+    const [dragActive, setDragActive] = useState(false)
     const [editionMode, setEditionMode] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
 
-    const { toEliminate, setToEliminate } = useHandleBannerEliminate()
-    const [showMenu, setShowMenu, handleMenu] = useHandleMenu()
 
 
 
@@ -79,8 +71,6 @@ export default function DynamicHome() {
             longitudItemsPrevios.current = dataEditableRef.current.options.length //Evitar scroll la primera vez
         }
     }, [data])
-
-
 
 
 
@@ -129,7 +119,7 @@ export default function DynamicHome() {
 
 
 
-    useAutoScroll(scroll, galleryRef, ediciones, longitudItemsPrevios)
+
 
 
 
