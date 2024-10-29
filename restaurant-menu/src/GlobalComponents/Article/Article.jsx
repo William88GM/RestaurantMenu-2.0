@@ -1,9 +1,12 @@
+import useChangeView from '@/Hooks/useChangeView'
+import useDetalles from '@/Hooks/useDetalles'
 import React, { useEffect, useState } from 'react'
 
 
 
-export default function Article({ namesUrlCategories, dragActive, dataEditableRef, setEdiciones, handleVisionItem, handleDetails, viewerMode, p, EditionMode, NormalMode, details = null, editionModeState, viewerModeState, logged, data, ediciones, galleryRef, cardRef, imagesHaveChanged }) {
+export default function Article({ namesUrlCategories, dragActive, dataEditableRef, setEdiciones, handleVisionItem, EditionMode, NormalMode, editionModeState, logged, data, ediciones, galleryRef, cardRef, imagesHaveChanged, viewerMode }) {
 
+    const { details, handleDetails, p } = useDetalles(namesUrlCategories)
 
     let baseURL = `${process.env.NEXT_PUBLIC_URL}`
 
@@ -13,14 +16,12 @@ export default function Article({ namesUrlCategories, dragActive, dataEditableRe
         }
     }
 
-    useEffect(() => {
-        console.log("dragActive", dragActive);
-    }, [dragActive])
+
 
     //Ver si no carga el modo ediciones igualmente, tal vez haya que usar cookies
 
     return <article>
-        {editionModeState && logged && data && viewerModeState !== null && ediciones[0] ?
+        {editionModeState && logged && data && viewerMode !== null && ediciones[0] ?
             <EditionMode data={data} dataEditableRef={dataEditableRef} viewerMode={viewerMode} setEdiciones={setEdiciones} dragActive={dragActive} logged={logged} handleVisionItem={handleVisionItem} imagesHaveChanged={imagesHaveChanged} galleryRef={galleryRef} ediciones={ediciones} />
             :
             <NormalMode handleDetails={handleDetails} viewerMode={viewerMode} p={p} details={details} baseURL={baseURL} galleryRef={galleryRef} cardRef={cardRef} ediciones={ediciones} />

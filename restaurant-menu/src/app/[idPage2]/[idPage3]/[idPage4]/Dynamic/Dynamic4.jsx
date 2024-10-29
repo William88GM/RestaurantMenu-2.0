@@ -25,15 +25,18 @@ export default function Dynamic4({ params }) {
 
     //CONFIGURACIONES MANUALES
     const isHome = false
+    const isProductPage = true
 
     const name = decodeURIComponent(params.idPage2.replaceAll("-", " "))
     const name1 = decodeURIComponent(params.idPage3.replaceAll("-", " "))
     const name2 = decodeURIComponent(params.idPage4.replaceAll("-", " "))
     const actualPage = name2
     const previousPage = name1
-    const namesUrlCategories = [name, name1, name2]
+    const sucursal = name
 
     const seUsanImagenes = true
+    const namesUrlCategories = [name, name1, name2]
+
     //TERMINAN LAS CONFIGURACIONES MANUALES
 
 
@@ -46,7 +49,7 @@ export default function Dynamic4({ params }) {
     //Estados Iniciales Estandar
     const { editionMode, setEditionMode, ediciones, setEdiciones, dragActive, setDragActive, loading, setLoading, showPassword, setShowPassword } = useStatesIniciales()
     //Hooks Iniciales Estandar
-    const { data, setData, logged, toEliminate, setToEliminate, showMenu, setShowMenu, handleMenu } = useHooksIniciales({ scroll, galleryRef, ediciones, longitudItemsPrevios, namesUrlCategories, seUsanImagenes, dataEditableRef, setEdiciones, guardando, dataAllRef })
+    const { data, setData, logged, toEliminate, setToEliminate, showMenu, setShowMenu, handleMenu, handleChangeView, viewerMode } = useHooksIniciales({ isProductPage, scroll, galleryRef, ediciones, longitudItemsPrevios, namesUrlCategories, seUsanImagenes, dataEditableRef, setEdiciones, guardando, dataAllRef })
     //Variables     
     const numPaginaActual = namesUrlCategories.length + 1
 
@@ -58,7 +61,6 @@ export default function Dynamic4({ params }) {
     }
 
 
-    //-----------------------------------------TERMINA LO ESTANDAR---------------------------------------
 
     async function handleSave() {
         guardando.current = true
@@ -154,16 +156,6 @@ export default function Dynamic4({ params }) {
 
     }
 
-
-
-    // ----------------------------------------PAGINA DE PRODUCTOS---------------------------------------
-
-    //MODO DE VISTA
-    const { viewerMode, handleChangeView } = useChangeView(galleryRef)
-
-    //DETALLES
-    const { details, handleDetails, p } = useDetalles({ name, name1, name2 })
-
     function verificarSoloNumericos(array) {
 
         for (const element of array) {
@@ -177,21 +169,81 @@ export default function Dynamic4({ params }) {
         return false
     }
 
+    //-----------------------------------------TERMINA LO ESTANDAR---------------------------------------
 
 
     return (
         <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
 
 
-            <Header navigateTo={`/${params.idPage2}`} isHome={isHome} handleMenu={handleMenu} logged={logged} editionMode={editionMode} showMenu={showMenu} />
+            <Header
+                navigateTo={`/${params.idPage2}`}
+                isHome={isHome}
+                handleMenu={handleMenu}
+                showMenu={showMenu}
+                logged={logged}
+                editionMode={editionMode}
+            />
 
-            <Section isHome={isHome} namesUrlCategories={namesUrlCategories} previousPage={previousPage} actualPage={actualPage} editionMode={editionMode} viewerMode={viewerMode} handleChangeView={handleChangeView} />
+            <Section
+                isHome={isHome}
+                actualPage={actualPage}
+                namesUrlCategories={namesUrlCategories}
+                previousPage={previousPage}
+                editionMode={editionMode}
+                galleryRef={galleryRef}
+                handleChangeView={handleChangeView}
+                viewerMode={viewerMode}
+            />
 
-            <Article handleVisionItem={handleVisionItem} namesUrlCategories={namesUrlCategories} dataEditableRef={dataEditableRef} imagesHaveChanged={imagesHaveChanged} dragActive={dragActive} logged={logged} data={data} ediciones={ediciones} EditionMode={EditionMode4} setEdiciones={setEdiciones} NormalMode={NormalMode4} editionModeState={editionMode} galleryRef={galleryRef} cardRef={cardRef} p={p} handleDetails={handleDetails} viewerMode={viewerMode} details={details} viewerModeState={viewerMode} />
+            <Article
+                EditionMode={EditionMode4}
+                NormalMode={NormalMode4}
+                handleVisionItem={handleVisionItem}
+                namesUrlCategories={namesUrlCategories}
+                dataEditableRef={dataEditableRef}
+                imagesHaveChanged={imagesHaveChanged}
+                dragActive={dragActive}
+                logged={logged}
+                data={data}
+                ediciones={ediciones}
+                setEdiciones={setEdiciones}
+                editionModeState={editionMode}
+                galleryRef={galleryRef}
+                cardRef={cardRef}
+                handleChangeView={handleChangeView}
+                viewerMode={viewerMode}
+            />
 
-            <Footer isHome={isHome} name={name} paginaActual={numPaginaActual} logged={logged} loading={loading} showMenu={showMenu} editionMode={editionMode} setEditionMode={setEditionMode} toEliminate={toEliminate} handleMenu={handleMenu} handleAddCategory={handleAddCategory} dragActive={dragActive} setDragActive={setDragActive} handleSave={handleSave} scroll={scroll} dataEditableRef={dataEditableRef} setEdiciones={setEdiciones} />
+            <Footer
+                isHome={isHome}
+                sucursal={sucursal}
+                paginaActual={numPaginaActual}
+                logged={logged}
+                loading={loading}
+                showMenu={showMenu}
+                editionMode={editionMode}
+                setEditionMode={setEditionMode}
+                toEliminate={toEliminate}
+                handleMenu={handleMenu}
+                handleAddCategory={handleAddCategory}
+                dragActive={dragActive}
+                setDragActive={setDragActive}
+                handleSave={handleSave}
+                scroll={scroll}
+                dataEditableRef={dataEditableRef}
+                setEdiciones={setEdiciones}
+            />
 
-            <Menu editionMode={editionMode} showMenu={showMenu} logged={logged} setShowMenu={setShowMenu} handleMenu={handleMenu} setShowPassword={setShowPassword} showPassword={showPassword} />
+            <Menu
+                editionMode={editionMode}
+                showMenu={showMenu}
+                logged={logged}
+                setShowMenu={setShowMenu}
+                handleMenu={handleMenu}
+                setShowPassword={setShowPassword}
+                showPassword={showPassword}
+            />
 
         </main>
     );

@@ -2,7 +2,7 @@ import handleAddCategory from "@/Hooks/handleAddCategory";
 import handleEditionMode from "@/Hooks/handleEditionMode";
 import Link from "next/link";
 
-export default function Footer({ logged, loading, paginaActual, isHome, showMenu, editionMode, setEditionMode, toEliminate, handleMenu, dragActive, setDragActive, name, handleSave, scroll, dataEditableRef, setEdiciones }) {
+export default function Footer({ logged, loading, paginaActual, isHome, showMenu, editionMode, setEditionMode, toEliminate, handleMenu, dragActive, setDragActive, sucursal, handleSave, scroll, dataEditableRef, setEdiciones }) {
 
     const cantidadPaginas = Number(process.env.NEXT_PUBLIC_CANTPAGINAS) //4
 
@@ -100,10 +100,10 @@ export default function Footer({ logged, loading, paginaActual, isHome, showMenu
                             <Link href={"https://www.instagram.com/lavenesanjuan?igsh=MW16OWtsc3Jha2g3eA=="} style={{ backgroundPosition: "-95px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
                             {isHome ? ""
                                 :
-                                name == "Sucursal Estadio" ?
+                                sucursal == "Sucursal Estadio" ?
                                     <Link href={"https://api.whatsapp.com/send?phone=%2B542644572435&text=Hola%20%F0%9F%91%8B%0AMe%20gustar%C3%ADa%20hacer%20una%20reserva%0AGracias&type=phone_number&app_absent=0"} style={{ backgroundPosition: "0px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
                                     :
-                                    name == "Sucursal Cabaña" ?
+                                    sucursal == "Sucursal Cabaña" ?
                                         <Link href={"https://api.whatsapp.com/send?phone=%2B542646264365&text=Hola%20%F0%9F%91%8B%0AMe%20gustar%C3%ADa%20hacer%20una%20reserva%0AGracias&type=phone_number&app_absent=0"} style={{ backgroundPosition: "0px 0px", backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Social.webp)`, width: "40px", height: "40px", backgroundSize: "136px 40px", backgroundRepeat: "no-repeat" }} target="_blank" className="redes"></Link>
                                         : ""
 

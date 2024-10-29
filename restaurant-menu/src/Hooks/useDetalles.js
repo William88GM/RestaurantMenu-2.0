@@ -2,7 +2,7 @@ import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export default function useDetalles({ name, name1, name2 }) {
+export default function useDetalles(namesUrlCategories) {
     const router = useRouter()
     const querys = useSearchParams()
     const p = querys.get("p")
@@ -11,7 +11,13 @@ export default function useDetalles({ name, name1, name2 }) {
 
     function handleDetails({ id }) {
         // Cambia solo la query 'p' sin renderizar de nuevo la página
-        router.push(`/${name.replaceAll(" ", "-")}/${name1.replaceAll(" ", "-")}/${name2.replaceAll(" ", "-")}?p=${id}`)
+        let path = ""
+        for (const index in namesUrlCategories) {
+            if (namesUrlCategories.length > 0) {
+                path = path.concat(`/${namesUrlCategories[index].replaceAll(" ", "-")}`)
+            }
+        }
+        router.push(`${path}?p=${id}`)
     }
     useEffect(() => {
         if (p && dataEditableRef.current) {

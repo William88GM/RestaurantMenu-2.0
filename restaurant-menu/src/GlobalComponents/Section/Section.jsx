@@ -1,7 +1,9 @@
+import useChangeView from "@/Hooks/useChangeView";
 import Link from "next/link";
 import { useEffect } from "react";
 
-export default function Section({ isHome, namesUrlCategories, previousPage, actualPage, editionMode, viewerMode, handleChangeView }) {
+export default function Section({ isHome, viewerMode, handleChangeView, galleryRef, namesUrlCategories, previousPage, actualPage, editionMode, }) {
+
 
     let navigateTo = "/"
 
@@ -11,6 +13,11 @@ export default function Section({ isHome, namesUrlCategories, previousPage, actu
         }
     }
 
+
+
+    useEffect(() => {
+        console.log("ediciones", editionMode);
+    }, [editionMode])
 
     if (isHome) {
         return <section>

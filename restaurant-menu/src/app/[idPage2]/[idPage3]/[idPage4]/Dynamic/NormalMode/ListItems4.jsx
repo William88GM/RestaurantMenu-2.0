@@ -1,5 +1,11 @@
+import { useEffect } from "react"
 
 export default function ListItems4({ viewerMode, handleDetails, e, }) {
+
+    useEffect(() => {
+        console.log("llega al componente?", viewerMode)
+    }, [viewerMode])
+
 
     return (
         <div onClick={() => viewerMode && handleDetails({ id: e.id, h4: e.name })} className={e.visible ? viewerMode ? "galery-item-small-user" : 'galery-item ' : "hidden"} >
