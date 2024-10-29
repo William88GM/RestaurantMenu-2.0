@@ -1,8 +1,8 @@
 
 
 import { headers } from 'next/headers'; // Para obtener los headers
-import StaticHome from './Static/StaticHome';
-import DynamicHome from './Dynamic/DynamicHome';
+import Dynamic1 from './Dynamic/Dynamic1';
+import Static1 from './Static/Static1';
 
 export const runtime = 'edge';
 export default async function Home({ params }) {
@@ -16,10 +16,10 @@ export default async function Home({ params }) {
 
   // Si es bot, mostrar la versión estática
   if (isBot) {
-    return <StaticHome />
+    return <Static1 />
   }
 
   // Si es un usuario normal, mostrar la versión dinámica
-  return <DynamicHome />
+  return <Dynamic1 />
 
 }

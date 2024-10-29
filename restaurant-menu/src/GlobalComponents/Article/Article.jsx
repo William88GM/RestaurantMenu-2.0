@@ -2,8 +2,16 @@ import React, { useEffect, useState } from 'react'
 
 
 
-export default function Article({ dragActive, dataEditableRef, setEdiciones, handleVisionItem, handleDetails, viewerMode, p, EditionMode, NormalMode, details = null, baseURL, editionModeState, viewerModeState, logged, data, ediciones, galleryRef, cardRef, imagesHaveChanged }) {
+export default function Article({ namesUrlCategories, dragActive, dataEditableRef, setEdiciones, handleVisionItem, handleDetails, viewerMode, p, EditionMode, NormalMode, details = null, editionModeState, viewerModeState, logged, data, ediciones, galleryRef, cardRef, imagesHaveChanged }) {
 
+
+    let baseURL = `${process.env.NEXT_PUBLIC_URL}`
+
+    for (const index in namesUrlCategories) {
+        if (namesUrlCategories.length > 0) {
+            baseURL = baseURL.concat(`/${namesUrlCategories[index].replaceAll(" ", "-")}`)
+        }
+    }
 
     useEffect(() => {
         console.log("dragActive", dragActive);
