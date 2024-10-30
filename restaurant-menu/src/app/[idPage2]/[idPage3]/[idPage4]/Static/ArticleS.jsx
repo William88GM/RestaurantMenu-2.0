@@ -50,7 +50,7 @@ export default async function ArticleS({ name, name1, name2 }) {
 
                 return <div className={e.visible ? data.interface.productsListViewMode ? "galery-item-small-user" : 'galery-item ' : "hidden"} key={e.id}>
 
-                    {e.image ? <img src={e.image} alt={e.name} /> : <div className="skeleton animate-pulse space-x-4 bg-red-300 h-[auto] aspect-square w-[70%] rounded"></div>}
+                    {e.image ? <img src={e.image} alt={e.name} /> : <div className={`skeleton animate-pulse space-x-4 pulseBackground h-[auto] aspect-square w-[70%] rounded`}></div>}
 
                     <h4>{e.name}</h4>
                     <p >{e.description}</p>

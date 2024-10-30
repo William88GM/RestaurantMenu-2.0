@@ -39,15 +39,15 @@ export default function Section({ isHome, viewerMode, handleChangeView, galleryR
                 </div>
                 {viewerMode !== null && handleChangeView !== null && !editionMode && <>{
                     viewerMode ?
-                        <svg className={`cursor-pointer buttonViewMode border-pink-950 border-2 rounded-lg p-1  `} onClick={handleChangeView} xmlns="http://www.w3.org/2000/svg" width="45px" height="45px" viewBox="0 0 24 24" fill="none">
+                        <svg style={{ backgroundColor: `${process.env.NEXT_PUBLIC_BUTTONVIEWMODEBACKGROUND}99`, border: `2px solid ${process.env.NEXT_PUBLIC_BUTTONVIEWMODEOUTSIDE}` }} className={`cursor-pointer buttonViewMode rounded-lg p-1  `} onClick={handleChangeView} xmlns="http://www.w3.org/2000/svg" width="45px" height="45px" viewBox="0 0 24 24" fill="none">
                             <path d="M8 6L21 6.00078M8 12L21 12.0008M8 18L21 18.0007M3 6.5H4V5.5H3V6.5ZM3 12.5H4V11.5H3V12.5ZM3 18.5H4V17.5H3V18.5Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                         :
-                        <svg className={`cursor-pointer buttonViewMode border-pink-950 border-2 rounded-lg p-1 `} onClick={handleChangeView} xmlns="http://www.w3.org/2000/svg" width="45px" height="45px" viewBox="0 0 618 618" fill="none">
+                        <svg style={{ backgroundColor: `${process.env.NEXT_PUBLIC_BUTTONVIEWMODEBACKGROUND}99`, border: `2px solid ${process.env.NEXT_PUBLIC_BUTTONVIEWMODEOUTSIDE}` }} className={`cursor-pointer buttonViewMode rounded-lg p-1 `} onClick={handleChangeView} xmlns="http://www.w3.org/2000/svg" width="45px" height="45px" viewBox="0 0 618 618" fill="none">
                             <g clipPath="url(#clip0_7_11)">
-                                <path d="M384 153H234C220.667 153 209 163.885 209 176.325V440.675C209 453.115 220.667 464 234 464H384C397.333 464 409 453.115 409 440.675V176.325C409 163.885 397.333 153 384 153Z" fill="#fff" />
-                                <path d="M384 516.802H234C220.667 516.802 209 525.103 209 534.589V736.173C209 745.659 220.667 753.96 234 753.96H384C397.333 753.96 409 745.659 409 736.173V534.589C409 525.103 397.333 516.802 384 516.802Z" fill="#7d0032" />
-                                <path d="M384 -136.732H234C220.667 -136.732 209 -128.432 209 -118.946V82.6382C209 92.1245 220.667 100.425 234 100.425H384C397.333 100.425 409 92.1245 409 82.6382V-118.946C409 -128.432 397.333 -136.732 384 -136.732Z" fill="#7d0032" />
+                                <path d="M384 153H234C220.667 153 209 163.885 209 176.325V440.675C209 453.115 220.667 464 234 464H384C397.333 464 409 453.115 409 440.675V176.325C409 163.885 397.333 153 384 153Z" fill={process.env.NEXT_PUBLIC_BUTTONVIEWMODEINSIDE} />
+                                <path d="M384 516.802H234C220.667 516.802 209 525.103 209 534.589V736.173C209 745.659 220.667 753.96 234 753.96H384C397.333 753.96 409 745.659 409 736.173V534.589C409 525.103 397.333 516.802 384 516.802Z" fill={process.env.NEXT_PUBLIC_BUTTONVIEWMODEOUTSIDE} />
+                                <path d="M384 -136.732H234C220.667 -136.732 209 -128.432 209 -118.946V82.6382C209 92.1245 220.667 100.425 234 100.425H384C397.333 100.425 409 92.1245 409 82.6382V-118.946C409 -128.432 397.333 -136.732 384 -136.732Z" fill={process.env.NEXT_PUBLIC_BUTTONVIEWMODEOUTSIDE} />
                             </g>
                             <defs>
                                 <clipPath id="clip0_7_11">

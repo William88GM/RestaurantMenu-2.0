@@ -19,8 +19,8 @@ export default function NormalMode4({ handleDetails, viewerMode, p, details, bas
             </div>
 
 
-            {details && p && <div className='modalDetails'>
-                {details.img ? <img src={details.img} /> : <div className="animate-pulse space-x-4 bg-red-300 h-[auto] aspect-square w-[70%] rounded"></div>}
+            {details && p && <div className='modalDetails' style={{ backgroundColor: `${process.env.NEXT_PUBLIC_MODALBACKGORUND}bd` }}>
+                {details.img ? <img src={details.img} /> : <div className={`animate-pulse space-x-4 h-[auto] pulseBackground aspect-square w-[70%] rounded`}></div>}
 
                 <h4>{details.h4}</h4>
                 <p >{details.p}</p>

@@ -10,7 +10,7 @@ export default function ListItems4({ viewerMode, handleDetails, e, }) {
     return (
         <div onClick={() => viewerMode && handleDetails({ id: e.id, h4: e.name })} className={e.visible ? viewerMode ? "galery-item-small-user" : 'galery-item ' : "hidden"} >
 
-            {e.image ? <img src={e.image} alt={e.name} /> : <div className="skeleton animate-pulse space-x-4 bg-red-300 h-[auto] aspect-square w-[70%] rounded"></div>}
+            {e.image ? <img src={e.image} alt={e.name} /> : <div className={`skeleton animate-pulse pulseBackground space-x-4  h-[auto] aspect-square w-[70%] rounded`}></div>}
 
             <h4>{e.name}</h4>
             <p >{e.description}</p>

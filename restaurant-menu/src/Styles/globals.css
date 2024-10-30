@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+.pulseBackground {
+  background-color: #fca5a5;
+}
+
+:root {
+  color-scheme: only light;
+
+  --color-scrollbar-1: #941417bc;
+  --color-scrollbar-2: #f9a2a2;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,9 +21,16 @@
 }
 
 
-:root {
-  color-scheme: only light;
-}
+
+
+
+
+
+
+
+
+
+
 
 
 @media (prefers-color-scheme:dark) {
@@ -186,17 +204,17 @@ footer {
 }
 
 .containerSucursales::-webkit-scrollbar-track {
-  background: #941417bc;
+  background: var(--color-scrollbar-1);
   border-radius: 20px;
 
 }
 
 .containerSucursales::-webkit-scrollbar-thumb {
-  background-color: rgb(249, 162, 162);
+  background-color: var(--color-scrollbar-2);
   /* color of the scroll thumb */
   border-radius: 20px;
   /* roundness of the scroll thumb */
-  border: 3px solid #941417bc;
+  border: 3px solid var(--color-scrollbar-1);
   /* creates padding around scroll thumb */
 }
 
@@ -288,7 +306,7 @@ article {
     backdrop-filter: blur(8px);
 
     border-radius: 14px;
-    background-color: #a50031bd;
+    /* background-color: #a50031bd; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -333,7 +351,7 @@ article {
     }
 
     &>p::-webkit-scrollbar-track {
-      background: #ffa9aa;
+      background: var(--color-scrollbar-2);
       border-radius: 20px;
 
 
@@ -341,11 +359,11 @@ article {
 
     &>p::-webkit-scrollbar-thumb {
 
-      background-color: #900020;
+      background-color: var(--color-scrollbar-1);
       /* color of the scroll thumb */
       border-radius: 20px;
       /* roundness of the scroll thumb */
-      border: 2px solid #ffa9aa;
+      border: 2px solid var(--color-scrollbar-2);
       /* creates padding around scroll thumb */
     }
 
@@ -420,17 +438,17 @@ article {
 }
 
 .containerInicio::-webkit-scrollbar-track {
-  background: #941417bc;
+  background: var(--color-scrollbar-1);
   border-radius: 20px;
 
 }
 
 .containerInicio::-webkit-scrollbar-thumb {
-  background-color: rgb(249, 162, 162);
+  background-color: var(--color-scrollbar-2);
   /* color of the scroll thumb */
   border-radius: 20px;
   /* roundness of the scroll thumb */
-  border: 3px solid #941417bc;
+  border: 3px solid var(--color-scrollbar-1);
   /* creates padding around scroll thumb */
 }
 
@@ -468,17 +486,17 @@ article {
 }
 
 .container::-webkit-scrollbar-track {
-  background: #941417bc;
+  background: var(--color-scrollbar-1);
   border-radius: 20px;
 
 }
 
 .container::-webkit-scrollbar-thumb {
-  background-color: rgb(249, 162, 162);
+  background-color: var(--color-scrollbar-2);
   /* color of the scroll thumb */
   border-radius: 20px;
   /* roundness of the scroll thumb */
-  border: 3px solid #941417bc;
+  border: 3px solid var(--color-scrollbar-1);
   /* creates padding around scroll thumb */
 }
 
@@ -611,17 +629,17 @@ section {
 }
 
 .galery::-webkit-scrollbar-track {
-  background: #941417bc;
+  background: var(--color-scrollbar-1);
   border-radius: 20px;
 
 }
 
 .galery::-webkit-scrollbar-thumb {
-  background-color: rgb(249, 162, 162);
+  background-color: var(--color-scrollbar-2);
   /* color of the scroll thumb */
   border-radius: 20px;
   /* roundness of the scroll thumb */
-  border: 3px solid #941417bc;
+  border: 3px solid var(--color-scrollbar-1);
   /* creates padding around scroll thumb */
 }
 
@@ -1017,8 +1035,6 @@ p:focus-visible {
   font-size: 30px;
   font-weight: bolder;
   color: rgb(0, 0, 0);
-  border: 2px solid #962220;
-  background-color: rgba(255, 77, 71, 0.219);
   border-radius: 20px;
   padding: 8px;
   /* margin-right: 20px; */
@@ -1282,7 +1298,7 @@ main {
   }
 
   & form::-webkit-scrollbar-track {
-    background: #ffa9aabc;
+    background: var(--color-scrollbar-2);
     border-radius: 20px;
 
 
@@ -1290,11 +1306,11 @@ main {
 
   & form::-webkit-scrollbar-thumb {
 
-    background-color: #900020;
+    background-color: var(--color-scrollbar-1);
     /* color of the scroll thumb */
     border-radius: 20px;
     /* roundness of the scroll thumb */
-    border: 3px solid #ffa9aabc;
+    border: 3px solid var(--color-scrollbar-2);
     /* creates padding around scroll thumb */
   }
 
@@ -1401,7 +1417,7 @@ main {
   height: 48px;
   border-radius: 50%;
   display: inline-block;
-  border-top: 3px solid #7a0000;
+  border-top: 3px solid var(--color-scrollbar-1);
   border-right: 3px solid transparent;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
@@ -1412,7 +1428,7 @@ main {
   height: 48px;
   border-radius: 50%;
   display: inline-block;
-  border-top: 3px solid #ffafaf;
+  border-top: 3px solid var(--color-scrollbar-2);
   border-right: 3px solid transparent;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
@@ -1482,7 +1498,7 @@ input:checked+.slider:before {
 
 .buttonViewMode {
 
-  background-color: #ff000099;
+  /* background-color: #ff000099; */
   animation-duration: .4s;
   animation-name: animationButtonViewMode;
 }
