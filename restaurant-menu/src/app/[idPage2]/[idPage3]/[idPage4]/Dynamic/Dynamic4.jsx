@@ -14,9 +14,6 @@ import useStatesIniciales from '@/app/VariablesIniciales/useStatesIniciales'
 import useHooksIniciales from '@/app/VariablesIniciales/useHooksIniciales'
 import Footer from "@/GlobalComponents/Footer/Footer";
 import Menu from '@/GlobalComponents/Menu/Menu'
-//Product imports
-import useChangeView from '@/Hooks/useChangeView'
-import useDetalles from '@/Hooks/useDetalles'
 
 export const runtime = 'edge';
 
@@ -173,7 +170,7 @@ export default function Dynamic4({ params }) {
 
 
     return (
-        <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
+        <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/background.webp)`, backgroundColor: process.env.NEXT_PUBLIC_BACKGROUNDCOLORMAIN }}>
 
 
             <Header

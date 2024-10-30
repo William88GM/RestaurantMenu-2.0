@@ -15,12 +15,12 @@ export default async function Static1() {
     console.log("data", data);
 
     return (
-        <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
+        <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/background.webp)`, backgroundColor: process.env.NEXT_PUBLIC_BACKGROUNDCOLORMAIN }}>
             <header>
 
                 <img className='title ' src={`${process.env.NEXT_PUBLIC_URL}/images/Title.webp`} alt="Título La Vene" />
                 <svg className={`esquinaSupDerecha`} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                    <path d="M0 0H138V138L0 0Z" fill="#b32624" />
+                    <path d="M0 0H138V138L0 0Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                 </svg>
                 {/* <Link href="/login">
                 </Link> */}
@@ -46,7 +46,7 @@ export default async function Static1() {
 
 
                 <svg className='esquinaInfIzquierda' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
-                    <path d="M138 138H0V0L138 138Z" fill="#b32624" />
+                    <path d="M138 138H0V0L138 138Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                 </svg>
 
 

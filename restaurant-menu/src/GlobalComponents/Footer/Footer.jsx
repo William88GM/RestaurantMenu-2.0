@@ -47,12 +47,12 @@ export default function Footer({ logged, loading, paginaActual, isHome, showMenu
                 (
                     !editionMode && showMenu ?
                         <svg className='esquinaInfIzquierda menuInferior' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
-                            <path d="M138 138H0V0L138 138Z" fill="#900020" />
+                            <path d="M138 138H0V0L138 138Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIIOPEN} />
                         </svg>
                         :
                         !editionMode &&
                         <svg className='esquinaInfIzquierda cursor-pointer' onClick={handleMenu} alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
-                            <path d="M138 138H0V0L138 138Z" fill="#b32624" />
+                            <path d="M138 138H0V0L138 138Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                         </svg>
 
                 )
@@ -60,16 +60,16 @@ export default function Footer({ logged, loading, paginaActual, isHome, showMenu
                 (
                     logged ? !editionMode && showMenu ?
                         <svg className='esquinaInfIzquierda menuInferior' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
-                            <path d="M138 138H0V0L138 138Z" fill="#900020" />
+                            <path d="M138 138H0V0L138 138Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIIOPEN} />
                         </svg>
                         :
                         !editionMode &&
                         <svg className='esquinaInfIzquierda cursor-pointer' onClick={handleMenu} alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
-                            <path d="M138 138H0V0L138 138Z" fill="#b32624" />
+                            <path d="M138 138H0V0L138 138Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                         </svg>
                         :
                         <svg className='esquinaInfIzquierda' alt="esquinaInfIzquierda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none">
-                            <path d="M138 138H0V0L138 138Z" fill="#b32624" />
+                            <path d="M138 138H0V0L138 138Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                         </svg>
 
                 )

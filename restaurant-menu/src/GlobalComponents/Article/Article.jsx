@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 
 export default function Article({ namesUrlCategories, dragActive, dataEditableRef, setEdiciones, handleVisionItem, EditionMode, NormalMode, editionModeState, logged, data, ediciones, galleryRef, cardRef, imagesHaveChanged, viewerMode }) {
 
-    const { details, handleDetails, p } = useDetalles(namesUrlCategories)
+    const { details, handleDetails, p } = useDetalles(namesUrlCategories, dataEditableRef)
 
     let baseURL = `${process.env.NEXT_PUBLIC_URL}`
 

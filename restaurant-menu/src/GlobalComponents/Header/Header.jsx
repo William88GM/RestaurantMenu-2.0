@@ -18,10 +18,10 @@ export default function Header({ navigateTo, isHome, logged, editionMode, showMe
                 <>
                     {!editionMode && showMenu ?
                         <svg className='esquinaSupDerecha menuSuperior' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none" alt="esquinaSupDerecha">
-                            <path d="M0 0H138V138L0 0Z" fill="#900020" />
+                            <path d="M0 0H138V138L0 0Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIIOPEN} />
                         </svg>
                         : <svg className={`esquinaSupDerecha ${!editionMode && "cursor-pointer"}`} onClick={handleMenu} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                            <path d="M0 0H138V138L0 0Z" fill="#b32624" />
+                            <path d="M0 0H138V138L0 0Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                         </svg>
                     }
                 </>
@@ -29,14 +29,14 @@ export default function Header({ navigateTo, isHome, logged, editionMode, showMe
                 <>
                     {logged ? !editionMode && showMenu ?
                         <svg className='esquinaSupDerecha menuSuperior' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 138" fill="none" alt="esquinaSupDerecha">
-                            <path d="M0 0H138V138L0 0Z" fill="#900020" />
+                            <path d="M0 0H138V138L0 0Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIIOPEN} />
                         </svg>
                         : <svg className={`esquinaSupDerecha ${!editionMode && "cursor-pointer"}`} onClick={handleMenu} xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                            <path d="M0 0H138V138L0 0Z" fill="#b32624" />
+                            <path d="M0 0H138V138L0 0Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                         </svg>
                         :
                         <svg className='esquinaSupDerecha' xmlns="http://www.w3.org/2000/svg" alt="esquinaSupDerecha" viewBox="0 0 138 138" fill="none">
-                            <path d="M0 0H138V138L0 0Z" fill="#b32624" />
+                            <path d="M0 0H138V138L0 0Z" fill={process.env.NEXT_PUBLIC_COLORESIIESQUINASIICLOSED} />
                         </svg>}
                 </>}
 

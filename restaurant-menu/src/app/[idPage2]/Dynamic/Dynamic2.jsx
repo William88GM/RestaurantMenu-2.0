@@ -132,7 +132,7 @@ export default function Dynamic2({ params }) {
 
 
     return (
-        <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/Flor.webp)` }}>
+        <main style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_URL}/images/background.webp)`, backgroundColor: process.env.NEXT_PUBLIC_BACKGROUNDCOLORMAIN }}>
 
             <Header
                 navigateTo={`/`}

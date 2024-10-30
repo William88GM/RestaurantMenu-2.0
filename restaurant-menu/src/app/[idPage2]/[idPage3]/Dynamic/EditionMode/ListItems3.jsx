@@ -86,14 +86,14 @@ export default function ListItems3({ imagesHaveChanged, handleVisionItem, handle
     return (dragActive ? (
         <div id={e.id} key={e.id} {...attributes} {...listeners} style={style} ref={setNodeRef} className='link-pag2   relative'>
             <span className='link-pag2 pt-[14px] pr-[2px] pb-[2px] pl-[2px]   rounded-md ' >{e.name}</span>
-            <img src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/reverse.webp`} width="30px" height="30px" />
+            <img src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/placeholder.webp`} width="30px" height="30px" />
 
 
         </div>
     ) : (
         <div id={e.id} key={e.id} ref={setNodeRef} className='link-pag2  editionModeItem'>
             <span contentEditable suppressContentEditableWarning={true} className='link-pag2 pt-[14px] pr-[2px] pb-[2px] pl-[2px]  rounded-md' >{e.name}</span>
-            <img src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/reverse.webp`} className=' cursor-pointer' onClick={() => document.getElementById(`file-input-${e.id}`).click()} width="30px" height="30px" />
+            <img src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/placeholder.webp`} className=' cursor-pointer' onClick={() => document.getElementById(`file-input-${e.id}`).click()} width="30px" height="30px" />
             <input accept="image/*" type="file" id={`file-input-${e.id}`} style={{ display: 'none' }} onChange={(event) => handleFileChange(event, i)} />
             {logged ? !toEliminate ? <button className='absolute left-0' id={e.id} onClick={handleBannerEliminate}>❌</button> : "" : ""}
 

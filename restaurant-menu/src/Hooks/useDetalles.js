@@ -2,7 +2,7 @@ import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export default function useDetalles(namesUrlCategories) {
+export default function useDetalles(namesUrlCategories, dataEditableRef) {
     const router = useRouter()
     const querys = useSearchParams()
     const p = querys.get("p")

@@ -92,7 +92,7 @@ export default function ListItems4({ imagesHaveChanged, viewerMode, data, handle
     return (dragActive ? (
 
         <div id={e.id} key={e.id}  {...attributes} {...listeners} className='galery-item-small' style={style} ref={setNodeRef}>
-            <img className='' src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/reverse.webp`} alt={e.name} />
+            <img className='' src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/placeholder.webp`} alt={e.name} />
             <h4 className='' title={e.name} >{e.name}</h4>
             <p  >{e.description}</p>
             <div className={!e.description ? "sinDescription flex items-center [padding:2px]" : "flex items-center [padding:2px]"}><span>$</span><p inputMode="numeric" className='[min-width:20px] font-bold rounded-md [margin-left:2px] [padding:2px]' >{e.price}</p></div>
@@ -102,7 +102,7 @@ export default function ListItems4({ imagesHaveChanged, viewerMode, data, handle
         : (
             <div key={e.id} id={e.id} className={viewerMode ? "galery-item-small-user" : 'galery-item '} ref={setNodeRef}>
 
-                <img className='editionModeItem cursor-pointer' src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/reverse.webp`} alt={e.name} onClick={() => document.getElementById(`file-input-${e.id}`).click()} />
+                <img className='editionModeItem cursor-pointer' src={e.image || `${process.env.NEXT_PUBLIC_URL}/images/placeholder.webp`} alt={e.name} onClick={() => document.getElementById(`file-input-${e.id}`).click()} />
                 <h4 className='editionModeItem' contentEditable suppressContentEditableWarning={true} >{e.name}</h4>
                 <p className={"editionModeItem"} contentEditable suppressContentEditableWarning={true} >{e.description}</p>
                 <div className='editionModeItem flex items-center [padding:2px] '><span>$</span><p inputMode="numeric" contentEditable suppressContentEditableWarning={true} className='[min-width:20px] font-bold rounded-md [margin-left:2px] [padding:2px]' >{e.price}</p></div>
